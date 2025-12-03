@@ -1,0 +1,17 @@
+version: 1
+frontend:
+  phases:
+    preBuild:
+      commands:
+        - cd OTWDS_v2/client  # Navigate to your actual React app
+        - npm ci  # Install deps
+    build:
+      commands:
+        - npm run build  # Build to dist
+  artifacts:
+    baseDirectory: OTWDS_v2/client/dist  # Point to the built files
+    files:
+      - '**/*'  # Include everything
+  cache:
+    paths:
+      - OTWDS_v2/client/node_modules/**/*
