@@ -1,0 +1,140 @@
+// client/src/pages/SectionPage.jsx  ← FINAL WITH WORKING ADD ENTRY
+
+import { useEffect, useState } from 'react';
+import axios from 'axios';
+import { useParams, useNavigate } from 'react-router-dom';
+import {
+  Button, Typography, Container, Paper, ListItem, ListItemText,
+  Box, Dialog, DialogTitle, DialogContent, DialogActions,
+  TextField, Grid, IconButton
+} from '@mui/material';
+import { ArrowBack, Add, CameraAlt, Delete } from '@mui/icons-material';
+
+export default function SectionPage() {
+  const { catId, secId } = useParams();
+  const navigate = useNavigate();
+  const [section, setSection] = useState(null);
+  const [entries, setEntries] = useState([]);
+  const [open, setOpen] = useState(false);
+  const [title, setTitle] = useState('');
+  const [content, setContent] = useState('');
+  const [images, setImages] = useState([]);
+  const [deleteDialog, setDeleteDialog] = useState(null);
+
+  useEffect(() => {
+    axios.get(`http://localhost:5000/api/sections/${secId}`)
+      .then(res => setSection(res.data));
+    axios.get(`http://localhost:5000/api/entries?sectionId=${secId}`)
+      .then(res => setEntries(res.data));
+  }, [secId]);
+
+  const handleImageUpload = (e) => {
+    const files = Array.from(e.target.files);
+    files.forEach(f => {
+      const reader = new FileReader();
+      reader.onloadend = () => setImages(prev => [...prev, reader.result]);
+      reader.readAsDataURL(f);
+    });
+  };
+
+  const saveEntry = () => {
+    axios.post('http://localhost:5000/api/entries', {
+      section: secId,
+      title,
+      content,
+      images
+    }).then(res => {
+      setEntries([...entries, res.data]);
+      setTitle(''); setContent(''); setImages([]); setOpen(false);
+    });
+  };
+
+  const confirmDelete = (id) => setDeleteDialog(id);
+  const executeDelete = () => {
+    axios.delete(`http://localhost:5000/api/entries/${deleteDialog}`)
+      .then(() => {
+        setEntries(entries.filter(e => e._id !== deleteDialog));
+        setDeleteDialog(null);
+      });
+  };
+
+  if (!section) return <Typography>Loading...</Typography>;
+
+  return (
+    <Container maxWidth="lg" sx={{ py: 6 }}>
+      <Button startIcon={<ArrowBack />} onClick={() => navigate(-1)} sx={{ mb: 4 }}>
+        ← Back
+      </Button>
+
+      <Box display="flex" justifyContent="space-between" alignItems="center" mb={6}>
+        <Typography variant="h3" color="#1976d2" fontWeight="bold">
+          {section.name}
+        </Typography>
+        <Button variant="contained" startIcon={<Add />} onClick={() => setOpen(true)}>
+          Add Entry
+        </Button>
+      </Box>
+
+      {entries.length === 0 ? (
+        <Typography color="text.secondary" align="center" sx={{ py: 8 }}>
+          No entries yet — add your first rack photo
+        </Typography>
+      ) : (
+        entries.map(entry => (
+          <Paper
+            key={entry._id}
+            elevation={4}
+            sx={{ mb: 4, p: 3, cursor: 'pointer', position: 'relative' }}
+            onClick={() => navigate(`/entry/${entry._id}`)}
+          >
+            <Typography variant="h5" gutterBottom>{entry.title}</Typography>
+            <Typography color="text.secondary">
+              {new Date(entry.createdAt).toLocaleDateString()}
+            </Typography>
+            <IconButton
+              sx={{ position: 'absolute', top: 8, right: 8 }}
+              color="error"
+              onClick={(e) => { e.stopPropagation(); confirmDelete(entry._id); }}
+            >
+              <Delete />
+            </IconButton>
+          </Paper>
+        ))
+      )}
+
+      {/* ADD ENTRY DIALOG */}
+      <Dialog open={open} onClose={() => setOpen(false)} maxWidth="md" fullWidth>
+        <DialogTitle>Add Entry to {section.name}</DialogTitle>
+        <DialogContent>
+          <TextField label="Title" fullWidth sx={{ mt: 2 }} value={title} onChange={e => setTitle(e.target.value)} />
+          <TextField label="Notes" fullWidth multiline rows={6} sx={{ mt: 2 }} value={content} onChange={e => setContent(e.target.value)} />
+          <Button variant="contained" component="label" startIcon={<CameraAlt />} sx={{ mt: 2 }}>
+            Upload Photos
+            <input type="file" hidden accept="image/*" multiple onChange={handleImageUpload} />
+          </Button>
+          <Grid container spacing={2} sx={{ mt: 2 }}>
+            {images.map((img, i) => (
+              <Grid item key={i}>
+                <img src={img} style={{ width: 150, height: 150, objectFit: 'cover', borderRadius: 8 }} alt="preview" />
+              </Grid>
+            ))}
+          </Grid>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => { setOpen(false); setTitle(''); setContent(''); setImages([]); }}>Cancel</Button>
+          <Button onClick={saveEntry} variant="contained">Save Entry</Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* DELETE CONFIRM */}
+      <Dialog open={!!deleteDialog} onClose={() => setDeleteDialog(null)}>
+        <DialogTitle>Delete Entry?</DialogTitle>
+        <DialogContent><Typography>Are you sure?</Typography></DialogContent>
+        <DialogActions>
+          <Button onClick={() => setDeleteDialog(null)}>Cancel</Button>
+          <Button onClick={executeDelete} color="error" variant="contained">Delete</Button>
+        </DialogActions>
+      </Dialog>
+    </Container>
+  );
+}

@@ -1,0 +1,17 @@
+version: 1
+frontend:
+  phases:
+    preBuild:
+      commands:
+        - cd OTWDS_v2/client        # Go into your actual client folder
+        - npm ci
+    build:
+      commands:
+        - npm run build             # This creates the dist folder
+  artifacts:
+    baseDirectory: OTWDS_v2/client/dist   # ← THIS IS THE KEY LINE
+    files:
+      - '**/*'
+  cache:
+    paths:
+      - OTWDS_v2/client/node_modules/**/*
