@@ -1,8 +1,11 @@
+// client/src/pages/CategoriesList.jsx  ← FINAL WORKING VERSION
+
 import { useEffect, useState } from 'react';
-import api from '../api';
+import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import { Paper, ListItem, ListItemText, Button, Box, Dialog, DialogTitle, DialogContent, TextField, DialogActions } from '@mui/material';
+import { Button, Typography, Container, Paper, ListItem, ListItemText, Box, Dialog, DialogTitle, DialogContent, DialogActions, TextField } from '@mui/material';
 import { Add } from '@mui/icons-material';
+import api from '../api';  // ← Make sure you have this from earlier
 
 export default function CategoriesList() {
   const [categories, setCategories] = useState([]);
@@ -10,18 +13,21 @@ export default function CategoriesList() {
   const [newName, setNewName] = useState('');
   const navigate = useNavigate();
 
+  // Load categories on mount
   useEffect(() => {
-api.get('/categories')
-      .then(res => setCategories(res.data));
+    api.get('/categories')
+      .then(res => setCategories(res.data))
+      .catch(err => console.error('Load error:', err));
   }, []);
 
   const addCategory = () => {
-api.get('/categories')
+    api.post('/categories', { name: newName })
       .then(res => {
-        setCategories([...categories, res.data]);
+        setCategories([...categories, res.data]);  // ← Add new one instantly
         setNewName('');
         setOpen(false);
-      });
+      })
+      .catch(err => console.error('Add error:', err));
   };
 
   return (
@@ -50,11 +56,20 @@ api.get('/categories')
       <Dialog open={open} onClose={() => setOpen(false)}>
         <DialogTitle>Add New Category</DialogTitle>
         <DialogContent>
-          <TextField autoFocus fullWidth label="Name" value={newName} onChange={e => setNewName(e.target.value)} />
+          <TextField
+            autoFocus
+            fullWidth
+            label="Category Name"
+            value={newName}
+            onChange={(e) => setNewName(e.target.value)}
+            sx={{ mt: 2 }}
+          />
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setOpen(false)}>Cancel</Button>
-          <Button onClick={addCategory} variant="contained">Create</Button>
+          <Button onClick={() => { setOpen(false); setNewName(''); }}>Cancel</Button>
+          <Button onClick={addCategory} variant="contained" disabled={!newName.trim()}>
+            Create
+          </Button>
         </DialogActions>
       </Dialog>
     </>
