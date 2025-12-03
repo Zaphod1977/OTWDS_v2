@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import axios from 'axios';
+import api from '../api';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Button, Typography, Container, Paper, Grid, Box } from '@mui/material';
 import { ArrowBack } from '@mui/icons-material';
@@ -10,11 +10,11 @@ export default function EntryPage() {
   const [entry, setEntry] = useState(null);
 
   useEffect(() => {
-  axios.get(`http://localhost:5000/api/entries/${entryId}`)
+  api.get(`/entries/${entryId}`)
     .then(res => setEntry(res.data))
     .catch(() => {
       // fallback: search all entries
-      axios.get('http://localhost:5000/api/entries')
+      api.get('/api/entries')
         .then(res => setEntry(res.data.find(e => e._id === entryId)));
     });
   }, [entryId]);

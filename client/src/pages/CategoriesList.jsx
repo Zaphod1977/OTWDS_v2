@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import axios from 'axios';
+import api from '../api';
 import { useNavigate } from 'react-router-dom';
 import { Paper, ListItem, ListItemText, Button, Box, Dialog, DialogTitle, DialogContent, TextField, DialogActions } from '@mui/material';
 import { Add } from '@mui/icons-material';
@@ -11,12 +11,12 @@ export default function CategoriesList() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    axios.get('http://localhost:5000/api/categories')
+api.get('/categories')
       .then(res => setCategories(res.data));
   }, []);
 
   const addCategory = () => {
-    axios.post('http://localhost:5000/api/categories', { name: newName })
+api.get('/categories')
       .then(res => {
         setCategories([...categories, res.data]);
         setNewName('');

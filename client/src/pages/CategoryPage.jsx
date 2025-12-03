@@ -1,7 +1,7 @@
 // client/src/pages/CategoryPage.jsx  ← FINAL, BULLETPROOF, NO MORE BUGS
 
 import { useEffect, useState } from 'react';
-import axios from 'axios';
+import api from '../api';
 import { useParams, useNavigate } from 'react-router-dom';
 import {
   Button, Typography, Container, Paper, ListItem, ListItemText,
@@ -20,19 +20,19 @@ export default function CategoryPage() {
   const [deleteDialog, setDeleteDialog] = useState(null); // { id, type }
 
   useEffect(() => {
-    axios.get(`http://localhost:5000/api/categories/${catId}`)
+api.get('/categories')
       .then(res => setCategory(res.data))
       .catch(() => {
-        axios.get('http://localhost:5000/api/categories')
+api.get('/categories')
           .then(res => setCategory(res.data.find(c => c._id === catId)));
       });
 
-    axios.get(`http://localhost:5000/api/sections?categoryId=${catId}`)
+    api.get(`/sections?categoryId=${catId}`)
       .then(res => setSections(res.data));
   }, [catId]);
 
   const addSection = () => {
-    axios.post('http://localhost:5000/api/sections', { name: newName, categoryId: catId })
+    api.post('/sections', { name: newName, categoryId: catId })
       .then(res => {
         setSections([...sections, res.data]);
         setNewName('');
@@ -45,7 +45,7 @@ export default function CategoryPage() {
   };
 
   const executeDelete = () => {
-    axios.delete(`http://localhost:5000/api/sections/${deleteDialog.id}`)
+    api.delete(`/sections/${deleteDialog.id}`)
       .then(() => {
         setSections(sections.filter(s => s._id !== deleteDialog.id));
         setDeleteDialog(null);

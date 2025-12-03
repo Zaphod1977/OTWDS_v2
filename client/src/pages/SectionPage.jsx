@@ -1,7 +1,7 @@
 // client/src/pages/SectionPage.jsx  ← FINAL WITH WORKING ADD ENTRY
 
 import { useEffect, useState } from 'react';
-import axios from 'axios';
+import api from '../api';
 import { useParams, useNavigate } from 'react-router-dom';
 import {
   Button, Typography, Container, Paper, ListItem, ListItemText,
@@ -22,9 +22,9 @@ export default function SectionPage() {
   const [deleteDialog, setDeleteDialog] = useState(null);
 
   useEffect(() => {
-    axios.get(`http://localhost:5000/api/sections/${secId}`)
+    api.get(`/sections/${secId}`)
       .then(res => setSection(res.data));
-    axios.get(`http://localhost:5000/api/entries?sectionId=${secId}`)
+    api.get(`/entries?sectionId=${secId}`)
       .then(res => setEntries(res.data));
   }, [secId]);
 
@@ -38,7 +38,7 @@ export default function SectionPage() {
   };
 
   const saveEntry = () => {
-    axios.post('http://localhost:5000/api/entries', {
+    api.post('/entries', {
       section: secId,
       title,
       content,
@@ -51,7 +51,7 @@ export default function SectionPage() {
 
   const confirmDelete = (id) => setDeleteDialog(id);
   const executeDelete = () => {
-    axios.delete(`http://localhost:5000/api/entries/${deleteDialog}`)
+    api.delete(`/entries/${deleteDialog}`)
       .then(() => {
         setEntries(entries.filter(e => e._id !== deleteDialog));
         setDeleteDialog(null);
