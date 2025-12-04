@@ -2,6 +2,12 @@ const express = require('express');
 const router = express.Router();
 const Section = require('../models/Section');
 
+// ←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←
+// THE ONE TRUE GATEKEEPER — LOCKS EVERY ROUTE BELOW
+const { auth } = require('../middleware/auth');
+router.use(auth);                     // ← THIS LINE PROTECTS EVERYTHING
+// ←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←
+
 // POST /api/sections
 router.post('/', async (req, res) => {
   try {

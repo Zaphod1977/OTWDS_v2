@@ -2,6 +2,12 @@ const express = require('express');
 const router = express.Router();
 const Category = require('../models/Category');
 
+// ←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←
+// THE ONE TRUE GATEKEEPER — LOCKS EVERY ROUTE BELOW
+const { auth } = require('../middleware/auth');
+router.use(auth);                     // ← THIS LINE PROTECTS EVERYTHING
+// ←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←
+
 // POST /api/categories → create a new category
 router.post('/', async (req, res) => {
   try {
@@ -16,13 +22,14 @@ router.post('/', async (req, res) => {
 
 // GET /api/categories → list all
 router.get('/', async (req, res) => {
-  const categories = await Category.find().sort('order')
-    .where('deleted').ne(true)   // ← THIS LINE
+  const categories = await Category.find()
+    .sort('order')
+    .where('deleted').ne(true)
     .sort('-createdAt');
   res.json(categories);
 });
 
-// GET single category by ID (for the CategoryPage header)
+// GET single category by ID
 router.get('/:id', async (req, res) => {
   try {
     const category = await Category.findById(req.params.id);

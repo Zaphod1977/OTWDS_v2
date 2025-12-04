@@ -5,6 +5,13 @@ const Category = require('../models/Category');
 const Section = require('../models/Section');
 const Entry = require('../models/Entry');
 
+// ←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←
+// THE ONE TRUE GATEKEEPER — LOCKS EVERY ROUTE BELOW
+const { auth } = require('../middleware/auth');
+router.use(auth);                     // ← THIS LINE PROTECTS EVERYTHING
+// ←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←
+
+
 // GET all deleted items (supreme lord only)
 router.get('/', async (req, res) => {
   try {

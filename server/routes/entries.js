@@ -2,10 +2,30 @@ const express = require('express');
 const router = express.Router();
 const Entry = require('../models/Entry');
 
+// ←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←
+// THE ONE TRUE GATEKEEPER — LOCKS EVERY ROUTE BELOW
+const { auth } = require('../middleware/auth');
+router.use(auth);                     // ← THIS LINE PROTECTS EVERYTHING
+// ←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←
+
 // POST /api/entries
 router.post('/', async (req, res) => {
   try {
-    const entry = new Entry(req.body);
+    const { title, content, images, section } = req.body;
+
+    // THIS IS THE SUPREMELORD'S MARK
+    const isSupremelord = req.user.role === "supremelord";
+    const creatorName = isSupremelord ? "SupremeLord" : "Admin";
+
+    const entry = new Entry({
+      title,
+      content,
+      images,
+      section,
+      createdBy: creatorName,           // ← "SupremeLord" or "Admin"
+      createdByEmail: req.user.email,   // ← actual email
+    });
+
     await entry.save();
     res.status(201).json(entry);
   } catch (err) {
