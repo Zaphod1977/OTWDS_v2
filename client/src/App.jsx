@@ -12,7 +12,7 @@ export default function App() {
       <Route path="/" element={
         <Container maxWidth="lg" sx={{ py: 6 }}>
           <Typography variant="h3" align="center" color="#0d47a1" fontWeight="bold" gutterBottom>
-            OTWDS v2 — House Handbook
+            OTWDS v2
           </Typography>
           <CategoriesList />
         </Container>
