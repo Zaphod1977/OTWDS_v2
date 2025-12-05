@@ -1,8 +1,9 @@
+// server/models/Section.js
 const mongoose = require('mongoose');
 
 const SectionSchema = new mongoose.Schema({
   name: { type: String, required: true, trim: true },
-  category: {
+  categoryId: {                              // ← MUST BE categoryId
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Category',
     required: true

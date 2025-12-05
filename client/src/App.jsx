@@ -1,27 +1,26 @@
+// client/src/App.jsx  ← THIS IS THE TRUTH
 import { Routes, Route } from 'react-router-dom';
-import CategoriesList from './pages/CategoriesList';
-import CategoryPage from './pages/CategoryPage';
-import EntryPage from './pages/EntryPage';
-import SectionPage from './pages/SectionPage';
 import TokenDashboard from './pages/TokenDashboard';
-import { Container, Typography, Box, Button } from '@mui/material';
-import { Add } from '@mui/icons-material';
+import ServiceUserView from './pages/ServiceUserView';
+import CategoryList from './pages/CategoriesList';     // ← YOUR MASTERPIECE
+import CategoryPage from './pages/CategoryPage';
+import SectionPage from './pages/SectionPage';
 
-export default function App() {
+function App() {
   return (
     <Routes>
+      {/* Admin login */}
       <Route path="/tokens" element={<TokenDashboard />} />
-      <Route path="/" element={
-        <Container maxWidth="lg" sx={{ py: 6 }}>
-          <Typography variant="h3" align="center" color="#0d47a1" fontWeight="bold" gutterBottom>
-            OTWDS v2 — House Handbook
-          </Typography>
-          <CategoriesList />
-        </Container>
-      } />
+      
+      {/* Service user token entry */}
+      <Route path="/service" element={<ServiceUserView />} />
+      
+      {/* EVERYTHING ELSE — YOUR MASTERPIECE */}
+      <Route path="/" element={<CategoryList />} />
       <Route path="/category/:catId" element={<CategoryPage />} />
-      <Route path="/category/:catId/section/:secId" element={<SectionPage />} />  {/* ← ADD THIS LINE */}
-      <Route path="/entry/:entryId" element={<EntryPage />} />
+      <Route path="/category/:catId/section/:secId" element={<SectionPage />} />
     </Routes>
   );
 }
+
+export default App;

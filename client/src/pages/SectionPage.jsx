@@ -1,140 +1,82 @@
-// client/src/pages/SectionPage.jsx  ← FINAL WITH WORKING ADD ENTRY
-
+// client/src/pages/SectionPage.jsx  ← FINAL — ENTRIES WITH TITLE, TEXT, IMAGE
 import { useEffect, useState } from 'react';
-import api from '../api';
 import { useParams, useNavigate } from 'react-router-dom';
-import {
-  Button, Typography, Container, Paper, ListItem, ListItemText,
-  Box, Dialog, DialogTitle, DialogContent, DialogActions,
-  TextField, Grid, IconButton
-} from '@mui/material';
-import { ArrowBack, Add, CameraAlt, Delete } from '@mui/icons-material';
+import api from '../api';
+import { Button, Typography, Container, Box, Paper, TextField, IconButton } from '@mui/material';
+import { ArrowBack, Add, Delete } from '@mui/icons-material';
 
 export default function SectionPage() {
   const { catId, secId } = useParams();
   const navigate = useNavigate();
   const [section, setSection] = useState(null);
   const [entries, setEntries] = useState([]);
-  const [open, setOpen] = useState(false);
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
-  const [images, setImages] = useState([]);
-  const [deleteDialog, setDeleteDialog] = useState(null);
+  const [image, setImage] = useState('');
 
   useEffect(() => {
-    api.get(`/sections/${secId}`)
-      .then(res => setSection(res.data));
-    api.get(`/entries?sectionId=${secId}`)
-      .then(res => setEntries(res.data));
+    api.get(`/sections/${secId}`).then(res => setSection(res.data));
+    api.get(`/entries?sectionId=${secId}`).then(res => setEntries(res.data));
   }, [secId]);
 
-  const handleImageUpload = (e) => {
-    const files = Array.from(e.target.files);
-    files.forEach(f => {
-      const reader = new FileReader();
-      reader.onloadend = () => setImages(prev => [...prev, reader.result]);
-      reader.readAsDataURL(f);
-    });
-  };
-
-  const saveEntry = () => {
-    api.post('/entries', {
-      section: secId,
-      title,
-      content,
-      images
-    }).then(res => {
-      setEntries([...entries, res.data]);
-      setTitle(''); setContent(''); setImages([]); setOpen(false);
-    });
-  };
-
-  const confirmDelete = (id) => setDeleteDialog(id);
-  const executeDelete = () => {
-    api.delete(`/entries/${deleteDialog}`)
-      .then(() => {
-        setEntries(entries.filter(e => e._id !== deleteDialog));
-        setDeleteDialog(null);
+  const addEntry = () => {
+    if (!title.trim()) return;
+    api.post('/entries', { title, content, image, sectionId: secId })
+      .then(res => {
+        setEntries([...entries, res.data]);
+        setTitle('');
+        setContent('');
+        setImage('');
       });
+  };
+
+  const deleteEntry = (id) => {
+    if (!window.confirm('Delete entry?')) return;
+    api.delete(`/entries/${id}`).then(() => {
+      setEntries(entries.filter(e => e._id !== id));
+    });
   };
 
   if (!section) return <Typography>Loading...</Typography>;
 
   return (
     <Container maxWidth="lg" sx={{ py: 6 }}>
-      <Button startIcon={<ArrowBack />} onClick={() => navigate(-1)} sx={{ mb: 4 }}>
-        ← Back
-      </Button>
+      <Button startIcon={<ArrowBack />} onClick={() => navigate(`/category/${catId}`)}>Back</Button>
 
-      <Box display="flex" justifyContent="space-between" alignItems="center" mb={6}>
-        <Typography variant="h3" color="#1976d2" fontWeight="bold">
-          {section.name}
-        </Typography>
-        <Button variant="contained" startIcon={<Add />} onClick={() => setOpen(true)}>
+      <Typography variant="h3" color="#0f0" textAlign="center" my={4}>
+        {section.name}
+      </Typography>
+
+      <Box component="form" onSubmit={(e) => { e.preventDefault(); addEntry(); }} mb={6} p={4} bgcolor="#111" borderRadius={3}>
+        <TextField fullWidth label="Title" value={title} onChange={(e) => setTitle(e.target.value)} sx={{ mb: 2 }} required />
+        <TextField fullWidth multiline rows={4} label="Content" value={content} onChange={(e) => setContent(e.target.value)} sx={{ mb: 2 }} />
+        <TextField fullWidth label="Image URL (optional)" value={image} onChange={(e) => setImage(e.target.value)} sx={{ mb: 2 }} />
+        <Button type="submit" variant="contained" startIcon={<Add />} color="success">
           Add Entry
         </Button>
       </Box>
 
       {entries.length === 0 ? (
-        <Typography color="text.secondary" align="center" sx={{ py: 8 }}>
-          No entries yet — add your first rack photo
-        </Typography>
+        <Typography align="center" color="#888" fontSize={28}>No entries yet.</Typography>
       ) : (
         entries.map(entry => (
-          <Paper
-            key={entry._id}
-            elevation={4}
-            sx={{ mb: 4, p: 3, cursor: 'pointer', position: 'relative' }}
-            onClick={() => navigate(`/entry/${entry._id}`)}
-          >
-            <Typography variant="h5" gutterBottom>{entry.title}</Typography>
-            <Typography color="text.secondary">
-              {new Date(entry.createdAt).toLocaleDateString()}
-            </Typography>
-            <IconButton
-              sx={{ position: 'absolute', top: 8, right: 8 }}
-              color="error"
-              onClick={(e) => { e.stopPropagation(); confirmDelete(entry._id); }}
-            >
-              <Delete />
-            </IconButton>
+          <Paper key={entry._id} sx={{ p: 4, mb: 4, bgcolor: '#222', color: '#fff' }}>
+            <Box display="flex" justifyContent="space-between" alignItems="flex-start">
+              <Box>
+                <Typography variant="h5" fontWeight="bold">{entry.title}</Typography>
+                <Typography sx={{ mt: 2, whiteSpace: 'pre-wrap' }}>{entry.content}</Typography>
+                {entry.image && <img src={entry.image} alt="entry" style={{ maxWidth: '100%', mt: 2, borderRadius: 8 }} />}
+                <Typography color="#0f0" fontSize={12} mt={2}>
+                  Added by: {entry.createdBy || 'Unknown'}
+                </Typography>
+              </Box>
+              <IconButton color="error" onClick={() => deleteEntry(entry._id)}>
+                <Delete />
+              </IconButton>
+            </Box>
           </Paper>
         ))
       )}
-
-      {/* ADD ENTRY DIALOG */}
-      <Dialog open={open} onClose={() => setOpen(false)} maxWidth="md" fullWidth>
-        <DialogTitle>Add Entry to {section.name}</DialogTitle>
-        <DialogContent>
-          <TextField label="Title" fullWidth sx={{ mt: 2 }} value={title} onChange={e => setTitle(e.target.value)} />
-          <TextField label="Notes" fullWidth multiline rows={6} sx={{ mt: 2 }} value={content} onChange={e => setContent(e.target.value)} />
-          <Button variant="contained" component="label" startIcon={<CameraAlt />} sx={{ mt: 2 }}>
-            Upload Photos
-            <input type="file" hidden accept="image/*" multiple onChange={handleImageUpload} />
-          </Button>
-          <Grid container spacing={2} sx={{ mt: 2 }}>
-            {images.map((img, i) => (
-              <Grid item key={i}>
-                <img src={img} style={{ width: 150, height: 150, objectFit: 'cover', borderRadius: 8 }} alt="preview" />
-              </Grid>
-            ))}
-          </Grid>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => { setOpen(false); setTitle(''); setContent(''); setImages([]); }}>Cancel</Button>
-          <Button onClick={saveEntry} variant="contained">Save Entry</Button>
-        </DialogActions>
-      </Dialog>
-
-      {/* DELETE CONFIRM */}
-      <Dialog open={!!deleteDialog} onClose={() => setDeleteDialog(null)}>
-        <DialogTitle>Delete Entry?</DialogTitle>
-        <DialogContent><Typography>Are you sure?</Typography></DialogContent>
-        <DialogActions>
-          <Button onClick={() => setDeleteDialog(null)}>Cancel</Button>
-          <Button onClick={executeDelete} color="error" variant="contained">Delete</Button>
-        </DialogActions>
-      </Dialog>
     </Container>
   );
 }

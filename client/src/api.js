@@ -1,14 +1,22 @@
-// client/src/api.js  ← ONE FILE TO RULE THEM ALL
-
+// client/src/api.js  ← FINAL VERSION — WORKS FOR SERVICE TOKENS
 import axios from 'axios';
 
-// CHANGE THIS ONE LINE WHEN YOU GO LIVE
-const API_BASE = 'https://otwds-api.onrender.com/api';
-// For local testing, just change it back to: 'http://localhost:5000/api'
-
 const api = axios.create({
-  baseURL: API_BASE,
-  timeout: 10000,
+  baseURL: 'http://localhost:5000/api',
+});
+
+// THIS INTERCEPTOR FIXES EVERYTHING
+api.interceptors.request.use((config) => {
+  // Service token from ServiceUserView has priority
+  if (window.currentServiceToken) {
+    config.headers.Authorization = `Bearer ${window.currentServiceToken}`;
+  } 
+  // Otherwise fall back to normal admin JWT
+  else {
+    const token = localStorage.getItem('token');
+    if (token) config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
 });
 
 export default api;

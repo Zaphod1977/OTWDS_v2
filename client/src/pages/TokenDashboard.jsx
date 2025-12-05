@@ -1,5 +1,6 @@
 // client/src/pages/TokenDashboard.jsx  (FINAL — CATEGORIES FLOW GUARANTEED)
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom'; 
 import axios from 'axios';
 
 const EXPIRY_OPTIONS = [
@@ -20,6 +21,8 @@ export default function TokenDashboard() {
   const [loading, setLoading] = useState(false);        // ← NEW: prevents empty dropdown
   const [form, setForm] = useState({ categoryId: '', expiresIn: '7d' });
   const [newToken, setNewToken] = useState(null);
+
+  const navigate = useNavigate();
 
   // Check if already logged in
   useEffect(() => {
@@ -64,16 +67,13 @@ export default function TokenDashboard() {
     setMessage('');
     try {
       const res = await axios.post('http://localhost:5000/api/auth/login', { email });
-      
-      // THIS IS THE NUCLEAR FIX
       localStorage.setItem('token', res.data.token);
       setUser({ email, token: res.data.token });
-      
-      // Force immediate reload of data with the fresh token
       await fetchData(res.data.token);
       setMessage('Welcome, SupremeLord.');
     } catch (err) {
       setMessage('Access denied. SupremeLord or Admin email only.');
+      navigate('/');
     }
   };
   const createToken = async (e) => {
@@ -135,7 +135,7 @@ export default function TokenDashboard() {
       ) : (
         <>
           <div style={{ textAlign: 'right', marginBottom: '20px' }}>
-            Logged in as <strong>{email || 'Supreme Being'}</strong> | 
+            Logged in as <strong>{email || 'Supreme Being'}</strong> |
             <button onClick={logout} style={{ marginLeft: '10px', background: 'none', color: '#f66', border: 'none', textDecoration: 'underline', cursor: 'pointer' }}>
               Logout
             </button>
@@ -153,7 +153,7 @@ export default function TokenDashboard() {
                 <form onSubmit={createToken} style={{ display: 'grid', gridTemplateColumns: '1fr 1fr auto', gap: '20px', alignItems: 'end' }}>
                   <div>
                     <label>Category</label>
-                    <select value={form.categoryId} onChange={e => setForm({...form, categoryId: e.target.value})} required style={{ width: '100%', padding: '12px' }}>
+                    <select value={form.categoryId} onChange={e => setForm({ ...form, categoryId: e.target.value })} required style={{ width: '100%', padding: '12px' }}>
                       <option value="">Choose...</option>
                       {categories.map(cat => (
                         <option key={cat._id} value={cat._id}>{cat.name}</option>
@@ -162,7 +162,7 @@ export default function TokenDashboard() {
                   </div>
                   <div>
                     <label>Duration</label>
-                    <select value={form.expiresIn} onChange={e => setForm({...form, expiresIn: e.target.value})} style={{ width: '100%', padding: '12px' }}>
+                    <select value={form.expiresIn} onChange={e => setForm({ ...form, expiresIn: e.target.value })} style={{ width: '100%', padding: '12px' }}>
                       {EXPIRY_OPTIONS.map(opt => (
                         <option key={opt.value} value={opt.value}>{opt.label}</option>
                       ))}
@@ -175,8 +175,8 @@ export default function TokenDashboard() {
 
                 {newToken && (
                   <div style={{ marginTop: '30px', padding: '30px', background: '#000', border: '3px solid #0f0', textAlign: 'center', borderRadius: '16px', fontSize: '32px' }}>
-                    <strong>NEW TOKEN:</strong><br/>
-                    <span style={{ fontFamily: 'monospace', letterSpacing: '8px', fontSize: '48px' }}>{newToken.token}</span><br/><br/>
+                    <strong>NEW TOKEN:</strong><br />
+                    <span style={{ fontFamily: 'monospace', letterSpacing: '8px', fontSize: '48px' }}>{newToken.token}</span><br /><br />
                     {newToken.expiresAt ? `Expires: ${new Date(newToken.expiresAt).toLocaleString()}` : 'Never expires'}
                   </div>
                 )}
@@ -190,10 +190,10 @@ export default function TokenDashboard() {
                 tokens.map(t => (
                   <div key={t._id} style={{ background: '#222', padding: '20px', borderRadius: '12px', marginBottom: '15px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                     <div>
-                      <strong style={{ fontSize: '28px', fontFamily: 'monospace' }}>{t.token}</strong><br/>
-                      Category: <strong>{t.categoryId?.name || '—'}</strong> | 
-                      Created: {new Date(t.createdAt).toLocaleDateString()} | 
-                      Expires: {t.expiresAt ? new Date(t.expiresAt).toLocaleString() : 'Never'} | 
+                      <strong style={{ fontSize: '28px', fontFamily: 'monospace' }}>{t.token}</strong><br />
+                      Category: <strong>{t.categoryId?.name || '—'}</strong> |
+                      Created: {new Date(t.createdAt).toLocaleDateString()} |
+                      Expires: {t.expiresAt ? new Date(t.expiresAt).toLocaleString() : 'Never'} |
                       Used by: {t.name || 'Not yet'}
                     </div>
                     <button onClick={() => revokeToken(t._id)} style={{ background: '#f00', color: '#fff', padding: '12px 24px', border: 'none', borderRadius: '8px', cursor: 'pointer' }}>

@@ -3,6 +3,9 @@ const cors = require('cors');
 const mongoose = require('mongoose');
 require('dotenv').config();
 
+console.log('JWT_SECRET loaded:', !!process.env.JWT_SECRET);
+console.log('First 10 chars:', process.env.JWT_SECRET?.slice(0,10));
+
 const app = express();
 
 app.use(cors());   // ← simple, dumb, always works in dev
@@ -16,6 +19,9 @@ app.use('/api/auth', authRoutes);
 
 const tokenRoutes = require('./routes/tokenRoutes');
 app.use('/api/tokens', tokenRoutes);
+
+const serviceRoutes = require('./routes/serviceRoutes');
+app.use('/api/service', serviceRoutes);
 
 // Connect to MongoDB Atlas
 mongoose.connect(process.env.MONGODB_URI)

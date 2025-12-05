@@ -1,18 +1,28 @@
+// server/routes/sections.js  ← FINAL — PUBLIC READ FOR SERVICE USERS
 const express = require('express');
 const router = express.Router();
 const Section = require('../models/Section');
-
-// ←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←
-// THE ONE TRUE GATEKEEPER — LOCKS EVERY ROUTE BELOW
 const { auth } = require('../middleware/auth');
-router.use(auth);                     // ← THIS LINE PROTECTS EVERYTHING
-// ←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←
 
-// POST /api/sections
+// PUBLIC — SERVICE USERS CAN READ SECTIONS
+router.get('/', async (req, res) => {
+  try {
+    const { categoryId } = req.query;
+    const query = categoryId ? { categoryId } : {};
+    const sections = await Section.find(query).sort('order');
+    res.json(sections);
+  } catch (err) {
+    console.error('Sections GET error:', err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// PROTECTED — ONLY SUPREMELORD/ADMIN CAN WRITE
+router.use(auth);
+
 router.post('/', async (req, res) => {
   try {
-    const { name, categoryId } = req.body;
-    const section = new Section({ name, category: categoryId });
+    const section = new Section(req.body);
     await section.save();
     res.status(201).json(section);
   } catch (err) {
@@ -20,36 +30,10 @@ router.post('/', async (req, res) => {
   }
 });
 
-// GET /api/sections?categoryId=xxx
-router.get('/', async (req, res) => {
-  try {
-    const { categoryId } = req.query;
-    const sections = await Section.find({ category: categoryId })
-      .where('deleted').ne(true)
-      .sort({ order: 1, createdAt: -1 });  // keeps your custom order + newest first
-    res.json(sections);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
-
-// GET single section by ID (for the SectionPage header)
-router.get('/:id', async (req, res) => {
-  try {
-    const section = await Section.findById(req.params.id);
-    if (!section) return res.status(404).json({ error: 'Not found' });
-    res.json(section);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
-
-// DELETE section (permanent)
 router.delete('/:id', async (req, res) => {
   try {
-    const section = await Section.findByIdAndDelete(req.params.id);
-    if (!section) return res.status(404).json({ error: 'Not found' });
-    res.json({ message: 'Section deleted forever' });
+    await Section.findByIdAndDelete(req.params.id);
+    res.json({ message: 'Deleted' });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
