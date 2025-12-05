@@ -1,6 +1,6 @@
 // backend/middleware/auth.js
 const jwt = require("jsonwebtoken");
-const User = require("../models/User"); // keep for future if we ever need it
+// const User = require("../models/User"); // keep for future if we ever need it
 
 // Helper: normalize email + split env arrays safely
 const getEmailsArray = (envVar) =>

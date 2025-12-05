@@ -5,10 +5,17 @@ require('dotenv').config();
 
 const app = express();
 
+app.use(cors());   // ← simple, dumb, always works in dev
+
 // Middleware
-app.use(cors());
 app.use(express.json({ limit: '50mb' }));        // ← THIS LINE
 app.use(express.urlencoded({ limit: '50mb', extended: true })); // ← and this one (good practice)
+
+const authRoutes = require('./routes/authRoutes');
+app.use('/api/auth', authRoutes);
+
+const tokenRoutes = require('./routes/tokenRoutes');
+app.use('/api/tokens', tokenRoutes);
 
 // Connect to MongoDB Atlas
 mongoose.connect(process.env.MONGODB_URI)
