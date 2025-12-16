@@ -1,7 +1,7 @@
+require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const mongoose = require('mongoose');
-require('dotenv').config();
 
 const app = express();
 
@@ -9,6 +9,7 @@ const app = express();
 app.use(cors());
 app.use(express.json({ limit: '50mb' }));        // ← THIS LINE
 app.use(express.urlencoded({ limit: '50mb', extended: true })); // ← and this one (good practice)
+app.use('/api/auth', require('./routes/auth'));
 
 // Connect to MongoDB Atlas
 mongoose.connect(process.env.MONGODB_URI)

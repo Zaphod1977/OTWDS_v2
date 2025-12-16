@@ -61,6 +61,7 @@ export default function SectionPage() {
   if (!section) return <Typography>Loading...</Typography>;
 
   return (
+
     <Container maxWidth="lg" sx={{ py: 6 }}>
       <Button startIcon={<ArrowBack />} onClick={() => navigate(-1)} sx={{ mb: 4 }}>
         ← Back

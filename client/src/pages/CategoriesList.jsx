@@ -11,12 +11,12 @@ export default function CategoriesList() {
   const navigate = useNavigate();
 
   useEffect(() => {
-api.get('/categories')
+    api.get('/categories')
       .then(res => setCategories(res.data));
   }, []);
 
   const addCategory = () => {
-api.get('/categories')
+    api.get('/categories')
       .then(res => {
         setCategories([...categories, res.data]);
         setNewName('');
@@ -27,6 +27,8 @@ api.get('/categories')
   return (
     <>
       <Box textAlign="center" mb={6}>
+        <br></br>        
+        <br></br>
         <Button variant="contained" size="large" startIcon={<Add />} onClick={() => setOpen(true)}>
           Add New Category
         </Button>
@@ -35,8 +37,7 @@ api.get('/categories')
       {categories.map(cat => (
         <Paper key={cat._id} elevation={8} sx={{ mb: 4, borderRadius: 3 }}>
           <ListItem
-            button
-            onClick={() => navigate(`/category/${cat._id}`)}
+            onClick={() => navigate(`/category/${cat._id}`)}  // Removed 'button' here
             sx={{ bgcolor: '#0d47a1', color: 'white', py: 3 }}
           >
             <ListItemText
