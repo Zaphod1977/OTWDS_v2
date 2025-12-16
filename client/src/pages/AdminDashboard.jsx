@@ -11,9 +11,9 @@ const AdminDashboard = () => {
 
   return (
     <div>
-      <h2>Admin Dashboard</h2>
+      <h1>Admin Dashboard</h1>
       <p>Welcome, Admin! Protected content here.</p>
-      <button onClick={handleLogout}>Logout</button>
+      <button onClick={handleLogout}>Logout</button>  // Added this
     </div>
   );
 };

@@ -4,10 +4,7 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 
 const JWT_SECRET = process.env.JWT_SECRET || 'bobby2025'; // Add this to your .env file for security
-const ADMIN_HASH = '$2b$10$aj4AJW2jRTbjSKtUIdRFSeeWbhIwRck4OR3HCJfRFaxguYu9dN4.W'; 
-
-// const bcrypt = require('bcryptjs');
-console.log(bcrypt.hashSync('Zaphod1977', 10));
+const ADMIN_HASH = '$2b$10$0Yh0GUni4BeSm8./plG4PeXLboC6Cn.0Wwdv9c5iIYyDcNo6hdywi'; 
 
 // Admin login endpoint
 router.post('/admin-login', async (req, res) => {

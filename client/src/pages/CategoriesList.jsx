@@ -37,7 +37,7 @@ export default function CategoriesList() {
       {categories.map(cat => (
         <Paper key={cat._id} elevation={8} sx={{ mb: 4, borderRadius: 3 }}>
           <ListItem
-            onClick={() => navigate(`/category/${cat._id}`)}  // Removed 'button' here
+            onClick={() => navigate(`/category/${cat._id}`)}  // Removed 'button'
             sx={{ bgcolor: '#0d47a1', color: 'white', py: 3 }}
           >
             <ListItemText
