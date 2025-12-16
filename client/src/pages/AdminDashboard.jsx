@@ -1,21 +1,14 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import CategoriesList from './CategoriesList'; // Assuming same folder
 
-const AdminDashboard = () => {
-  const navigate = useNavigate();
-
-  const handleLogout = () => {
-    localStorage.removeItem('adminToken');
-    navigate('/admin-login');
-  };
-
+const Dashboard = () => {
   return (
     <div>
-      <h1>Admin Dashboard</h1>
-      <p>Welcome, Admin! Protected content here.</p>
-      <button onClick={handleLogout}>Logout</button>  // Added this
+      <h2>Dashboard</h2>
+      <p>Welcome back! Here's your categories:</p>
+      <CategoriesList /> {/* Restores original access */}
     </div>
   );
 };
 
-export default AdminDashboard;
+export default Dashboard;

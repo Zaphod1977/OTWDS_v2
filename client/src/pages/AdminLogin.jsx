@@ -16,8 +16,8 @@ const AdminLogin = () => {
     try {
       const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/auth/admin-login`, { code });
       if (response.data.success) {
-        localStorage.setItem('adminToken', response.data.token); // Store token
-        navigate('/admin-dashboard'); // Redirect on success
+        localStorage.setItem('adminToken', response.data.token);
+        navigate('/dashboard'); // Changed to /dashboard
       } else {
         setError(response.data.message || 'Invalid code');
       }
