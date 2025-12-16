@@ -1,19 +1,21 @@
 import { Routes, Route } from 'react-router-dom';
 import './App.css';
+import CategoriesList from './pages/CategoriesList';
 import CategoryPage from './pages/CategoryPage';
 import EntryPage from './pages/EntryPage';
 import SectionPage from './pages/SectionPage';
-import Footer from './pages/Footer';
-import AdminLogin from './pages/AdminLogin'; // If keeping standalone, but embedded now
+import AdminLogin from './pages/AdminLogin';
 import PrivateRoute from './components/PrivateRoute';
 import LandingPage from './pages/LandingPage';
-import Dashboard from './pages/Dashboard'; // New/renamed from AdminDashboard
-import Header from './pages/Header'; // New import
+import Dashboard from './pages/AdminDashboard'; // New
+import Header from './pages/Header'; // New
+import { Container, Typography, Button } from '@mui/material';
+import { Link } from 'react-router-dom';
 
 export default function App() {
   return (
     <>
-      <Header /> {/* Global header */}
+      <Header />
       <Routes>
         <Route path="/" element={<LandingPage />} />
         <Route element={<PrivateRoute />}>
@@ -23,7 +25,6 @@ export default function App() {
         <Route path="/category/:catId/section/:secId" element={<SectionPage />} />
         <Route path="/entry/:entryId" element={<EntryPage />} />
       </Routes>
-      {/* <Footer /> if global */}
     </>
   );
 }
