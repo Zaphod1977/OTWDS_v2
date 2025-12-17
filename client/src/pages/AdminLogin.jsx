@@ -8,26 +8,27 @@ const AdminLogin = () => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setError('');
-    setLoading(true);
+ const handleSubmit = async (e) => {
+  e.preventDefault();
+  setError('');
+  setLoading(true);
 
-    try {
-      const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/auth/admin-login`, { code });
-      if (response.data.success) {
-        localStorage.setItem('adminToken', response.data.token);
-        navigate('/dashboard'); // Changed to /dashboard
-      } else {
-        setError(response.data.message || 'Invalid code');
-      }
-    } catch (err) {
-      console.error('Login error:', err.response ? err.response.data : err.message);
-      setError('An error occurred. Please try again.');
-    } finally {
-      setLoading(false);
+  try {
+    const backendUrl = import.meta.env.VITE_BACKEND_URL || 'http://localhost:5000'; // Fallback for local dev only
+    const response = await axios.post(`${backendUrl}/api/auth/admin-login`, { code });
+    if (response.data.success) {
+      localStorage.setItem('adminToken', response.data.token);
+      navigate('/dashboard');
+    } else {
+      setError(response.data.message || 'Invalid code');
     }
-  };
+  } catch (err) {
+    console.error('Login error:', err.response ? err.response.data : err.message);
+    setError('An error occurred. Please try again.');
+  } finally {
+    setLoading(false);
+  }
+};
 
   return (
     <div>
