@@ -29,7 +29,7 @@ const AdminLogin = () => {
       }
     } catch (err) {
       console.error('Login error:', err.response ? err.response.data : err.message);
-      setError('An error occurred. Please try again.');
+      setError('You Fucked up son. Please try again.');
     } finally {
       setLoading(false);
     }
