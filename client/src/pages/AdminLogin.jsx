@@ -33,7 +33,7 @@ const AdminLogin = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }
 
   return (
     <div style={{ maxWidth: '400px', margin: 'auto', padding: '20px' }}>
