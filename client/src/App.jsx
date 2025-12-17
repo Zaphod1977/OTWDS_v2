@@ -1,9 +1,9 @@
 import { Routes, Route } from 'react-router-dom';
 import './App.css';
 import CategoriesList from './pages/CategoriesList';
-import CategoryPage from './pages/CategoryPage';
+import CategoryPage from './pages/SubCategoryPage';
 import EntryPage from './pages/EntryPage';
-import SectionPage from './pages/SectionPage';
+import SectionPage from './pages/UserEntriesPage';
 import AdminLogin from './pages/AdminLogin';
 import PrivateRoute from './components/PrivateRoute';
 import LandingPage from './pages/LandingPage';

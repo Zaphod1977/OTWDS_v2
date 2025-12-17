@@ -4,8 +4,8 @@ import CategoriesList from './CategoriesList'; // Assuming same folder
 const Dashboard = () => {
   return (
     <div>
-      <h2>Dashboard</h2>
-      <p>Welcome back! Here's your categories:</p>
+      <br></br>
+      <h2>Categories Page</h2>
       <CategoriesList /> {/* Restores original access */}
     </div>
   );

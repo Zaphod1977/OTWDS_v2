@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import api from '../api';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Button, Typography, Container, Paper, Grid, Box } from '@mui/material';
-import { ArrowBack } from '@mui/icons-material';
+import { Add, Delete } from '@mui/icons-material';
 
 export default function EntryPage() {
   const { entryId } = useParams();
@@ -23,9 +23,6 @@ export default function EntryPage() {
 
   return (
     <Container maxWidth="lg" sx={{ py: 4 }}>
-      <Button startIcon={<ArrowBack />} onClick={() => navigate(-1)} sx={{ mb: 3 }}>
-        Back
-      </Button>
 
       <Typography variant="h3" gutterBottom fontWeight="bold">
         {entry.title}

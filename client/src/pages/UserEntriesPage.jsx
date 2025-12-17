@@ -8,7 +8,7 @@ import {
   Box, Dialog, DialogTitle, DialogContent, DialogActions,
   TextField, Grid, IconButton
 } from '@mui/material';
-import { ArrowBack, Add, CameraAlt, Delete } from '@mui/icons-material';
+import { Add, CameraAlt, Delete } from '@mui/icons-material';
 
 export default function SectionPage() {
   const { catId, secId } = useParams();
@@ -63,9 +63,9 @@ export default function SectionPage() {
   return (
 
     <Container maxWidth="lg" sx={{ py: 6 }}>
-      <Button startIcon={<ArrowBack />} onClick={() => navigate(-1)} sx={{ mb: 4 }}>
-        ← Back
-      </Button>
+            <Typography variant="h5" color="white" fontWeight="bold" gutterBottom>
+        Service User Entry Page
+      </Typography>
 
       <Box display="flex" justifyContent="space-between" alignItems="center" mb={6}>
         <Typography variant="h3" color="#1976d2" fontWeight="bold">
@@ -78,7 +78,7 @@ export default function SectionPage() {
 
       {entries.length === 0 ? (
         <Typography color="text.secondary" align="center" sx={{ py: 8 }}>
-          No entries yet — add your first rack photo
+          No entries yet — add your first entry
         </Typography>
       ) : (
         entries.map(entry => (

@@ -8,7 +8,7 @@ import {
   Box, Dialog, DialogTitle, DialogContent, DialogActions,
   TextField, IconButton
 } from '@mui/material';
-import { ArrowBack, Add, Delete } from '@mui/icons-material';
+import { Add, Delete } from '@mui/icons-material';
 
 export default function CategoryPage() {
   const { catId } = useParams();
@@ -20,10 +20,10 @@ export default function CategoryPage() {
   const [deleteDialog, setDeleteDialog] = useState(null); // { id, type }
 
   useEffect(() => {
-api.get('/categories')
+    api.get('/categories')
       .then(res => setCategory(res.data))
       .catch(() => {
-api.get('/categories')
+        api.get('/categories')
           .then(res => setCategory(res.data.find(c => c._id === catId)));
       });
 
@@ -56,16 +56,17 @@ api.get('/categories')
 
   return (
     <Container maxWidth="lg" sx={{ py: 6 }}>
-      <Button startIcon={<ArrowBack />} onClick={() => navigate('/')} sx={{ mb: 5 }}>
-        ← Back
-      </Button>
+      {/* Client Info Section */}
+      <Typography variant="h5" color="white" fontWeight="bold" gutterBottom>
+        Sub Category Page
+      </Typography>
 
       <Box display="flex" justifyContent="space-between" alignItems="center" mb={6}>
         <Typography variant="h3" color="#0d47a1" fontWeight="bold">
           {category.name}
         </Typography>
         <Button variant="contained" startIcon={<Add />} onClick={() => setOpen(true)}>
-          Add Section
+          Add Sub Category
         </Button>
       </Box>
 

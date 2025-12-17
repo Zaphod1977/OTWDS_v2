@@ -26,7 +26,7 @@ export default function CategoriesList() {
 
   return (
     <>
-      <Box textAlign="center" mb={6}>
+      <Box textAlign="right" mb={6}>
         <br></br>        
         <br></br>
         <Button variant="contained" size="large" startIcon={<Add />} onClick={() => setOpen(true)}>

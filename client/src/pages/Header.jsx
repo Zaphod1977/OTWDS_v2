@@ -12,7 +12,7 @@ const Header = () => {
   let userName = 'User'; // Default
   try {
     const decoded = jwtDecode(token);
-    userName = decoded.role === 'admin' ? 'Admin' : 'Service User'; // Customize based on role
+    userName = decoded.role === 'admin' ? 'Bobby Bridges' : 'Service User'; // Customize based on role
   } catch (err) {
     // Ignore decode errors
   }
