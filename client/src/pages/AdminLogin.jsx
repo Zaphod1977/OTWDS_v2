@@ -14,7 +14,12 @@ const AdminLogin = () => {
     setLoading(true);
 
     try {
-      const backendUrl = import.meta.env.VITE_BACKEND_URL || 'http://localhost:5000'; // Fallback for local, remove for prod
+      const backendUrl = import.meta.env.VITE_BACKEND_URL;
+      if (!backendUrl) {
+        console.error('VITE_BACKEND_URL is not set in environment variables');
+        setError('Configuration error—backend URL not configured. Contact support.');
+        return;
+      }
       const response = await axios.post(`${backendUrl}/api/auth/admin-login`, { code });
       if (response.data.success) {
         localStorage.setItem('adminToken', response.data.token);
