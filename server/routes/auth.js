@@ -3,6 +3,7 @@ const router = express.Router();
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const Token = require('../models/Token');
+const crypto = require('crypto');
 
 const JWT_SECRET = process.env.JWT_SECRET || 'bobby2025'; // Add this to your .env file for security
 const ADMIN_HASH = '$2b$10$0Yh0GUni4BeSm8./plG4PeXLboC6Cn.0Wwdv9c5iIYyDcNo6hdywi'; 
@@ -26,8 +27,8 @@ router.post('/admin-login', async (req, res) => {
 router.post('/generate-token', async (req, res) => {
   const { name, timeFrame, category } = req.body;
   try {
-    const expiry = calculateExpiry(timeFrame); // Function to calculate date
-    const token = jwt.sign({ catId: category, expiry, permissions: 'read-write', role: 'service' }, JWT_SECRET, { expiresIn: '1y' }); // Long expiry for token itself
+    const expiry = calculateExpiry(timeFrame);
+    const token = crypto.randomBytes(5).toString('hex'); // 10 characters (5 bytes hex)
     const newToken = new Token({ token, catId: category, expiry, generatedBy: 'admin' });
     await newToken.save();
     res.json({ success: true, token });

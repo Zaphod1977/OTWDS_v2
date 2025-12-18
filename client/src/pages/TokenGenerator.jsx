@@ -1,16 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Box, Typography, TextField, MenuItem, Select, FormControl, InputLabel, Button, IconButton } from '@mui/material';
+import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import api from '../api';
-import { Box, Typography, TextField, MenuItem, Select, FormControl, InputLabel, Button } from '@mui/material';
 
 const TokenGenerator = () => {
   const [name, setName] = useState('');
   const [timeFrame, setTimeFrame] = useState('');
   const [category, setCategory] = useState('');
-  the [categories, setCategories] = useState([]);
+  const [categories, setCategories] = useState([]);
   const [token, setToken] = useState('');
   const [error, setError] = useState('');
-  const navigate = useNavigate();
+  const [copied, setCopied] = useState(false);
 
   useEffect(() => {
     api.get('/categories')
@@ -21,12 +21,19 @@ const TokenGenerator = () => {
   const handleGenerate = async () => {
     setError('');
     setToken('');
+    setCopied(false);
     try {
       const response = await api.post('/auth/generate-token', { name, timeFrame, category });
       setToken(response.data.token);
     } catch (err) {
       setError('Error generating token');
     }
+  };
+
+  const handleCopy = () => {
+    navigator.clipboard.writeText(token);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000); // Reset after 2s
   };
 
   return (
@@ -61,7 +68,22 @@ const TokenGenerator = () => {
       <Button variant="contained" onClick={handleGenerate} sx={{ mt: 2 }}>
         Generate
       </Button>
-      {token && <Typography sx={{ mt: 2 }}>Token: {token}</Typography>}
+      <Box sx={{ mt: 2, display: 'flex', alignItems: 'center' }}>
+        <TextField
+          label="Generated Token"
+          value={token}
+          fullWidth
+          InputProps={{
+            readOnly: true,
+            endAdornment: token && (
+              <IconButton onClick={handleCopy}>
+                <ContentCopyIcon />
+              </IconButton>
+            ),
+          }}
+        />
+        {copied && <Typography sx={{ ml: 1, color: 'green' }}>Copied!</Typography>}
+      </Box>
       {error && <Typography color="error" sx={{ mt: 2 }}>{error}</Typography>}
     </Box>
   );
