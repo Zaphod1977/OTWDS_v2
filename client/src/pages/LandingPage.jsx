@@ -6,15 +6,17 @@ import houseImg from '../assets/images/Girl20the20eardrum.jpg'
 const LandingPage = () => {
   return (
     <Container maxWidth="lg" sx={{ py: 6, textAlign: 'center' }}>
+      <Typography variant="h6" sx={{ mt: 4 }}>Service User? Login here:</Typography>
+      <ServiceLogin />
       {/* Client Info Section */}
       <Typography variant="h3" color="primary" fontWeight="bold" gutterBottom>
-        Bridges Residence 
+        Bridges Residence
       </Typography>
       <Box sx={{ mb: 4 }}>
         <Typography variant="body1">
           802 West 6th St,
           <br></br>
-         Staunton IL 62088
+          Staunton IL 62088
         </Typography>
         <Typography variant="body1">
           Phone: (314) 853-0016
@@ -55,7 +57,7 @@ const LandingPage = () => {
 
       {/* Embedded Login Form */}
       <Box sx={{ mt: 6, maxWidth: '400px', margin: 'auto' }}>
-        <AdminLogin />  
+        <AdminLogin />
       </Box>
     </Container>
   );
