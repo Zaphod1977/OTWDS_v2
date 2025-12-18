@@ -7,10 +7,11 @@ const app = express();
 
 // Middleware
 app.use(cors({
-  origin: 'https://main.d3qk4r01h8cob1.amplifyapp.com', // Or '*' for any origin during testing
-  methods: ['GET', 'POST', 'PUT', 'DELETE'], // Add methods as needed
-  credentials: true // If using cookies/auth headers later
+  origin: ['http://localhost:5173', 'https://main.d3qk4r01h8cob1.amplifyapp.com'], // Local + hosted
+  methods: ['GET', 'POST', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
 }));
+
 app.use(express.json({ limit: '50mb' }));        // ← THIS LINE
 app.use(express.urlencoded({ limit: '50mb', extended: true })); // ← and this one (good practice)
 app.use('/api/auth', require('./routes/auth'));

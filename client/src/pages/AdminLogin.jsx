@@ -14,12 +14,20 @@ const AdminLogin = () => {
     setLoading(true);
 
     try {
-      const backendUrl = import.meta.env.VITE_BACKEND_URL;
+      let backendUrl;
+
+      // LOCAL DEV MODE - Uncomment this block for local testing, comment for hosted deploys
+      // backendUrl = import.meta.env.VITE_BACKEND_URL || 'http://localhost:5000';
+
+      // HOSTED/PROD MODE - Uncomment this block for hosted deploys, comment for local testing
+      // NOTE: Before deploying to Amplify, ensure this is uncommented and VITE_BACKEND_URL is set in Amplify console
+      backendUrl = import.meta.env.VITE_BACKEND_URL;
       if (!backendUrl) {
         console.error('VITE_BACKEND_URL is not set in environment variables');
         setError('Configuration error—backend URL not configured. Contact support.');
         return;
       }
+
       const response = await axios.post(`${backendUrl}/api/auth/admin-login`, { code });
       if (response.data.success) {
         localStorage.setItem('adminToken', response.data.token);
@@ -29,11 +37,11 @@ const AdminLogin = () => {
       }
     } catch (err) {
       console.error('Login error:', err.response ? err.response.data : err.message);
-      setError('You Fucked up son. Please try again.');
+      setError('An error occurred. Please try again.');
     } finally {
       setLoading(false);
     }
-  }
+  };
 
   return (
     <div style={{ maxWidth: '400px', margin: 'auto', padding: '20px' }}>

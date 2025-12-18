@@ -6,8 +6,8 @@ import houseImg from '../assets/images/Girl20the20eardrum.jpg'
 const LandingPage = () => {
   return (
     <Container maxWidth="lg" sx={{ py: 6, textAlign: 'center' }}>
-      <Typography variant="h6" sx={{ mt: 4 }}>Service User? Login here:</Typography>
-      <ServiceLogin />
+      {/* <Typography variant="h6" sx={{ mt: 4 }}>Service User? Login here:</Typography>
+      <ServiceLogin /> */}
       {/* Client Info Section */}
       <Typography variant="h3" color="primary" fontWeight="bold" gutterBottom>
         Bridges Residence
