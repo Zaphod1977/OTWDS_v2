@@ -26,6 +26,7 @@ app.use('/api/categories', require('./routes/categories'));
 app.use('/api/sections', require('./routes/sections'));
 app.use('/api/entries', require('./routes/entries'));
 app.use('/api/deletedItems', require('./routes/deletedItems'));
+app.use('/api/auth', require('./routes/auth'));
 
 // Test route
 app.get('/api/test', (req, res) => {

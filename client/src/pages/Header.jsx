@@ -10,9 +10,11 @@ const Header = () => {
   if (!token) return null; // Hide header if not logged in
 
   let userName = 'User'; // Default
+  let role = '';
   try {
     const decoded = jwtDecode(token);
-    userName = decoded.role === 'admin' ? 'Bobby Bridges' : 'Service User'; // Customize based on role
+    userName = decoded.role === 'admin' ? 'Admin' : 'Service User'; // Customize based on role
+    role = decoded.role;
   } catch (err) {
     // Ignore decode errors
   }
@@ -25,6 +27,11 @@ const Header = () => {
   return (
     <AppBar position="static" color="primary">
       <Toolbar>
+        {role === 'admin' && (
+          <Button color="inherit" onClick={() => navigate('/token-generator')}>
+            Token Generator
+          </Button>
+        )}
         <Typography variant="h6" sx={{ flexGrow: 1 }}>
           Logged in as {userName}
         </Typography>

@@ -8,6 +8,7 @@ import AdminLogin from './pages/AdminLogin';
 import PrivateRoute from './components/PrivateRoute';
 import LandingPage from './pages/LandingPage';
 import Dashboard from './pages/AdminDashboard'; // New
+import TokenGenerator from './pages/TokenGenerator';
 import Header from './pages/Header'; // New
 import { Container, Typography, Button } from '@mui/material';
 import { Link } from 'react-router-dom';
@@ -20,6 +21,7 @@ export default function App() {
         <Route path="/" element={<LandingPage />} />
         <Route element={<PrivateRoute />}>
           <Route path="/dashboard" element={<Dashboard />} />
+           <Route path="/token-generator" element={<TokenGenerator />} />
         </Route>
         <Route path="/category/:catId" element={<CategoryPage />} />
         <Route path="/category/:catId/section/:secId" element={<SectionPage />} />
