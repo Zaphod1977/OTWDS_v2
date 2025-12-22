@@ -8,12 +8,12 @@ const app = express();
 // Middleware
 app.use(cors({
   origin: ['http://localhost:5173', 'https://main.d3qk4r01h8cob1.amplifyapp.com'], // Local + hosted
-  methods: ['GET', 'POST', 'OPTIONS'],
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization']
 }));
 
-app.use(express.json({ limit: '50mb' }));        // ← THIS LINE
-app.use(express.urlencoded({ limit: '50mb', extended: true })); // ← and this one (good practice)
+app.use(express.json({ limit: '50mb' })); // THIS LINE
+app.use(express.urlencoded({ limit: '50mb', extended: true })); // and this one (good practice)
 app.use('/api/auth', require('./routes/auth'));
 
 // Connect to MongoDB Atlas

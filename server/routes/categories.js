@@ -38,13 +38,12 @@ router.get('/:id', async (req, res) => {
 // DELETE category
 router.delete('/:id', async (req, res) => {
   try {
-    const categoryId = req.params.id;
-    const sections = await Section.find({ catId: categoryId });
+    const sections = await Section.find({ catId: req.params.id });
     for (const section of sections) {
       await Entry.deleteMany({ secId: section._id });
       await Section.findByIdAndDelete(section._id);
     }
-    await Category.findByIdAndDelete(categoryId);
+    await Category.findByIdAndDelete(req.params.id);
     res.json({ success: true, message: 'Category deleted' });
   } catch (err) {
     res.status(500).json({ message: err.message });
