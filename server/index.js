@@ -8,7 +8,7 @@ const app = express();
 // Middleware
 app.use(cors({
   origin: ['http://localhost:5173', 'https://main.d3qk4r01h8cob1.amplifyapp.com'], // Local + hosted
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'], // Added 'DELETE'
   allowedHeaders: ['Content-Type', 'Authorization']
 }));
 
