@@ -36,25 +36,24 @@ const LandingPage = () => {
       </Box>
 
       {/* Asset Details Section */}
-      <Grid container spacing={2} justifyContent="center">
-        <Grid item xs={6} sm={3}>
-          <Typography variant="h6" fontWeight="bold">Square Footage</Typography>
-          <Typography variant="body1">2,500 sqft</Typography>
-        </Grid>
-        <Grid item xs={6} sm={3}>
-          <Typography variant="h6" fontWeight="bold">Bedrooms</Typography>
-          <Typography variant="body1">4 beds</Typography>
-        </Grid>
-        <Grid item xs={6} sm={3}>
-          <Typography variant="h6" fontWeight="bold">Acres</Typography>
-          <Typography variant="body1">1.5 acres</Typography>
-        </Grid>
-        <Grid item xs={6} sm={3}>
-          <Typography variant="h6" fontWeight="bold">Bathrooms</Typography>
-          <Typography variant="body1">3 baths</Typography>
-        </Grid>
-      </Grid>
-
+<Grid container spacing={2} justifyContent="center">
+  <Grid sx={{ width: { xs: '50%', sm: '25%' } }}>
+    <Typography variant="h6" fontWeight="bold">Square Footage</Typography>
+    <Typography variant="body1">2,500 sqft</Typography>
+  </Grid>
+  <Grid sx={{ width: { xs: '50%', sm: '25%' } }}>
+    <Typography variant="h6" fontWeight="bold">Bedrooms</Typography>
+    <Typography variant="body1">4 beds</Typography>
+  </Grid>
+  <Grid sx={{ width: { xs: '50%', sm: '25%' } }}>
+    <Typography variant="h6" fontWeight="bold">Acres</Typography>
+    <Typography variant="body1">1.5 acres</Typography>
+  </Grid>
+  <Grid sx={{ width: { xs: '50%', sm: '25%' } }}>
+    <Typography variant="h6" fontWeight="bold">Bathrooms</Typography>
+    <Typography variant="body1">3 baths</Typography>
+  </Grid>
+</Grid>
       {/* Embedded Login Form */}
       <Box sx={{ mt: 6, maxWidth: '400px', margin: 'auto' }}>
         <AdminLogin />

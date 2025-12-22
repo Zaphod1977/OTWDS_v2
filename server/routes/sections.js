@@ -1,6 +1,8 @@
 const express = require('express');
 const router = express.Router();
 const Section = require('../models/Section');
+const Entry = require('../models/Entry');
+
 
 // POST /api/sections
 router.post('/', async (req, res) => {
@@ -41,12 +43,11 @@ router.get('/:id', async (req, res) => {
 // DELETE section (permanent)
 router.delete('/:id', async (req, res) => {
   try {
-    const section = await Section.findByIdAndDelete(req.params.id);
-    if (!section) return res.status(404).json({ error: 'Not found' });
-    res.json({ message: 'Section deleted forever' });
+    await Entry.deleteMany({ secId: req.params.id }); // Delete associated entries
+    await Section.findByIdAndDelete(req.params.id);
+    res.json({ success: true, message: 'Section deleted' });
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    res.status(500).json({ message: err.message });
   }
 });
-
 module.exports = router;

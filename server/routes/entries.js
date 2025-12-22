@@ -36,12 +36,10 @@ router.get('/:id', async (req, res) => {
 // DELETE entry (permanent) — YOU ALREADY HAVE THIS AND IT WORKS
 router.delete('/:id', async (req, res) => {
   try {
-    const entry = await Entry.findByIdAndDelete(req.params.id);
-    if (!entry) return res.status(404).json({ error: 'Not found' });
-    res.json({ message: 'Entry deleted forever' });
+    await Entry.findByIdAndDelete(req.params.id);
+    res.json({ success: true, message: 'Entry deleted' });
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    res.status(500).json({ message: err.message });
   }
 });
-
 module.exports = router;
