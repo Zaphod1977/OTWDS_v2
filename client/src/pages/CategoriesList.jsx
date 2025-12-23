@@ -1,22 +1,21 @@
 import { useEffect, useState } from 'react';
 import api from '../api';
 import { useNavigate } from 'react-router-dom';
-import { useContext } from 'react'; import AuthContext from '../context/AuthContext';
-import { Paper, ListItem, ListItemText, Button, Box, Dialog, DialogTitle, DialogContent, TextField, DialogActions, IconButton } from '@mui/material'; // Added IconButton
+import { Paper, ListItem, ListItemText, Button, Box, Dialog, DialogTitle, DialogContent, TextField, DialogActions, IconButton, Typography } from '@mui/material'; // Added Typography for modal
 import { Add, Delete as DeleteIcon } from '@mui/icons-material';
 
 export default function CategoriesList() {
   const [categories, setCategories] = useState([]);
   const [open, setOpen] = useState(false);
   const [newName, setNewName] = useState('');
+  const [deleteOpen, setDeleteOpen] = useState(false);
+  const [deleteId, setDeleteId] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
     api.get('/categories')
       .then(res => setCategories(res.data));
   }, []);
-
-  const { user } = useContext(AuthContext); const role = user?.role || '';
 
   const addCategory = () => {
     api.post('/categories', { name: newName })
@@ -29,53 +28,50 @@ export default function CategoriesList() {
       .catch(err => console.error('Error adding category', err));
   };
 
-  const handleDelete = async (id, e) => { // Added e parameter
+  const handleDelete = (id, e) => {
     e.stopPropagation(); // Prevent bubbling to ListItem onClick
-    if (window.confirm('Are you sure you want to delete this category?')) {
-      try {
-        await api.delete(`/categories/${id}`);
-        api.get('/categories') // Refetch to refresh list
-          .then(res => setCategories(res.data));
-      } catch (err) {
-        console.error('Error deleting category', err);
-      }
+    setDeleteId(id);
+    setDeleteOpen(true);
+  };
+
+  const confirmDelete = async () => {
+    setDeleteOpen(false);
+    try {
+      await api.delete(`/categories/${deleteId}`);
+      api.get('/categories')
+        .then(res => setCategories(res.data));
+    } catch (err) {
+      console.error('Error deleting category', err);
+      alert('Failed to delete category');
     }
   };
 
-
   return (
     <>
-      {role === 'admin' && (
-        <Box textAlign="right" mb={6}>
-          <br></br>
-          <br></br>
-          <Button variant="contained" size="large" startIcon={<Add />} onClick={() => setOpen(true)}>
-            Add New Category
-          </Button>
-        </Box>
-      )}
+      <Box textAlign="right" mb={6}>
+        <br></br>
+        <br></br>
+        <Button variant="contained" size="large" startIcon={<Add />} onClick={() => setOpen(true)}>
+          Add New Category
+        </Button>
+      </Box>
 
-      {categories.map(cat => {
-        const isPermitted = role !== 'service' || cat._id === user.catId; // Admin all, service permitted only
-        return (
-          <Paper key={cat._id} elevation={8} sx={{ mb: 4, borderRadius: 3 }}>
-            <ListItem
-              onClick={isPermitted ? () => navigate(`/category/${cat._id}`) : null}
-              sx={{ bgcolor: '#0d47a1', color: isPermitted ? 'white' : 'gray', py: 3, cursor: isPermitted ? 'pointer' : 'not-allowed' }}
-            >
-              <ListItemText
-                primary={cat.name}
-                primaryTypographyProps={{ fontSize: 30, fontWeight: 'bold' }}
-              />
-              {role === 'admin' && (
-                <IconButton onClick={(e) => handleDelete(cat._id, e)} sx={{ color: 'white' }}>
-                  <DeleteIcon />
-                </IconButton>
-              )}
-            </ListItem>
-          </Paper>
-        );
-      })}
+      {categories.map(cat => (
+        <Paper key={cat._id} elevation={8} sx={{ mb: 4, borderRadius: 3 }}>
+          <ListItem
+            onClick={() => navigate(`/category/${cat._id}`)}
+            sx={{ bgcolor: '#0d47a1', color: 'white', py: 3 }}
+          >
+            <ListItemText
+              primary={cat.name}
+              primaryTypographyProps={{ fontSize: 30, fontWeight: 'bold' }}
+            />
+            <IconButton onClick={(e) => handleDelete(cat._id, e)} sx={{ color: 'white' }}>
+              <DeleteIcon />
+            </IconButton>
+          </ListItem>
+        </Paper>
+      ))}
 
       <Dialog open={open} onClose={() => setOpen(false)}>
         <DialogTitle>Add New Category</DialogTitle>
@@ -85,6 +81,17 @@ export default function CategoriesList() {
         <DialogActions>
           <Button onClick={() => setOpen(false)}>Cancel</Button>
           <Button onClick={addCategory} variant="contained">Create</Button>
+        </DialogActions>
+      </Dialog>
+
+      <Dialog open={deleteOpen} onClose={() => setDeleteOpen(false)}>
+        <DialogTitle>Confirm Delete</DialogTitle>
+        <DialogContent>
+          <Typography>Are you sure you want to delete this category?</Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setDeleteOpen(false)}>Cancel</Button>
+          <Button onClick={confirmDelete} variant="contained" color="error">OK</Button>
         </DialogActions>
       </Dialog>
     </>
