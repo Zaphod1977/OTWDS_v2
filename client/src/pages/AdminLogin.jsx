@@ -33,6 +33,7 @@ const AdminLogin = () => {
       if (response.data.success) {
         localStorage.setItem('adminToken', response.data.token);
         navigate('/dashboard');
+        // location.reload();
       } else {
         setError(response.data.message || 'Invalid code');
       }

@@ -1,10 +1,14 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useContext } from 'react';
 import api from '../api';
 import { useNavigate } from 'react-router-dom';
-import { Paper, ListItem, ListItemText, Button, Box, Dialog, DialogTitle, DialogContent, TextField, DialogActions, IconButton, Typography } from '@mui/material'; // Added Typography for modal
+import { Paper, ListItem, ListItemText, Button, Box, Dialog, DialogTitle, DialogContent, TextField, DialogActions, IconButton, Typography } from '@mui/material';
 import { Add, Delete as DeleteIcon } from '@mui/icons-material';
+import AuthContext from '../context/AuthContext';
 
 export default function CategoriesList() {
+  const { user } = useContext(AuthContext); // Get role and catId from context
+  const role = user?.role || '';
+  const permittedCatId = user?.catId || ''; // From token for service
   const [categories, setCategories] = useState([]);
   const [open, setOpen] = useState(false);
   const [newName, setNewName] = useState('');
@@ -29,7 +33,7 @@ export default function CategoriesList() {
   };
 
   const handleDelete = (id, e) => {
-    e.stopPropagation(); // Prevent bubbling to ListItem onClick
+    e.stopPropagation(); // Prevent navigation
     setDeleteId(id);
     setDeleteOpen(true);
   };
@@ -48,30 +52,37 @@ export default function CategoriesList() {
 
   return (
     <>
-      <Box textAlign="right" mb={6}>
-        <br></br>
-        <br></br>
-        <Button variant="contained" size="large" startIcon={<Add />} onClick={() => setOpen(true)}>
-          Add New Category
-        </Button>
-      </Box>
+      {role === 'admin' && (
+        <Box textAlign="right" mb={6}>
+          <br></br>
+          <br></br>
+          <Button variant="contained" size="large" startIcon={<Add />} onClick={() => setOpen(true)}>
+            Add New Category
+          </Button>
+        </Box>
+      )}
 
-      {categories.map(cat => (
-        <Paper key={cat._id} elevation={8} sx={{ mb: 4, borderRadius: 3 }}>
-          <ListItem
-            onClick={() => navigate(`/category/${cat._id}`)}
-            sx={{ bgcolor: '#0d47a1', color: 'white', py: 3 }}
-          >
-            <ListItemText
-              primary={cat.name}
-              primaryTypographyProps={{ fontSize: 30, fontWeight: 'bold' }}
-            />
-            <IconButton onClick={(e) => handleDelete(cat._id, e)} sx={{ color: 'white' }}>
-              <DeleteIcon />
-            </IconButton>
-          </ListItem>
-        </Paper>
-      ))}
+      {categories.map(cat => {
+        const isPermitted = role !== 'service' || cat._id === permittedCatId; // Admin all, service only permitted
+        return (
+          <Paper key={cat._id} elevation={8} sx={{ mb: 4, borderRadius: 3 }}>
+            <ListItem
+              onClick={isPermitted ? () => navigate(`/category/${cat._id}`) : null}
+              sx={{ bgcolor: '#0d47a1', color: isPermitted ? 'white' : 'gray', py: 3, cursor: isPermitted ? 'pointer' : 'not-allowed' }}
+            >
+              <ListItemText
+                primary={cat.name}
+                primaryTypographyProps={{ fontSize: 30, fontWeight: 'bold' }}
+              />
+              {role === 'admin' && (
+                <IconButton onClick={(e) => handleDelete(cat._id, e)} sx={{ color: 'white' }}>
+                  <DeleteIcon />
+                </IconButton>
+              )}
+            </ListItem>
+          </Paper>
+        );
+      })}
 
       <Dialog open={open} onClose={() => setOpen(false)}>
         <DialogTitle>Add New Category</DialogTitle>
