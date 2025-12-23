@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { Box, Typography, TextField, Button } from '@mui/material';
 
 const AdminLogin = () => {
   const [code, setCode] = useState('');
@@ -44,25 +45,27 @@ const AdminLogin = () => {
   };
 
   return (
-    <div style={{ maxWidth: '400px', margin: 'auto', padding: '20px' }}>
-      <h2>Admin Login</h2>
+    <Box sx={{ maxWidth: 400, mx: 'auto', p: 2, bgcolor: '#757575', borderRadius: 2, color: 'white' }}>
+      <Typography variant="h5" gutterBottom align="center">
+        Admin Login
+      </Typography>
       <form onSubmit={handleSubmit}>
-        <div>
-          <label>Admin Code:</label>
-          <input
-            type="password"
-            value={code}
-            onChange={(e) => setCode(e.target.value)}
-            required
-            style={{ width: '100%', padding: '8px', margin: '10px 0' }}
-          />
-        </div>
-        {error && <p style={{ color: 'red' }}>{error}</p>}
-        <button type="submit" disabled={loading} style={{ width: '100%', padding: '10px' }}>
-          {loading ? 'Logging in...' : 'Login'}
-        </button>
+        <TextField
+          label="Admin Password"
+          type="password"
+          variant="filled"
+          fullWidth
+          value={code}
+          onChange={(e) => setCode(e.target.value)}
+          required
+          sx={{ mb: 2, bgcolor: 'grey', input: { color: 'black' }, label: { color: 'black' } }}
+        />
+        {error && <Typography color="error" sx={{ mb: 2 }}>{error}</Typography>}
+        <Button type="submit" variant="contained" fullWidth disabled={loading} sx={{ bgcolor: '#2196f3' }}>
+          {loading ? 'Logging in...' : 'LOGIN'}
+        </Button>
       </form>
-    </div>
+    </Box>
   );
 };
 

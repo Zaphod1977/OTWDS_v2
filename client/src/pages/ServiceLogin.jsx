@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext } from 'react'; // Added useContext
 import { Box, Button, TextField, Typography, Alert, Modal, IconButton } from '@mui/material';
 import InfoIcon from '@mui/icons-material/Info';
 import CloseIcon from '@mui/icons-material/Close';
@@ -13,11 +13,12 @@ const ServiceLogin = () => {
   const { login } = useContext(AuthContext); // Assuming login function sets token/user in context
   const navigate = useNavigate();
 
-  const handleSubmit = async (e) => {
+const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
     try {
-      const response = await axios.post('/api/auth/service-login', { token });
+      const backendUrl = import.meta.env.VITE_BACKEND_URL || 'http://localhost:5000'; // Adjust for your setup
+      const response = await axios.post(`${backendUrl}/api/auth/service-login`, { token });
       const { token: authToken, user } = response.data; // Expect JWT and user details
       login(authToken, user); // Store in context/localStorage
       navigate('/dashboard'); // Redirect to categories/dashboard
@@ -26,7 +27,7 @@ const ServiceLogin = () => {
     }
   };
 
-  return (
+ return (
     <Box sx={{ maxWidth: 400, mx: 'auto', mt: 4, p: 2, border: '1px solid #ccc', borderRadius: 2 }}>
       <Typography variant="h5" gutterBottom>
         Service User Login

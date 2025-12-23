@@ -6,18 +6,18 @@ const PrivateRoute = ({ requiredRole = 'admin' }) => {
   const token = localStorage.getItem('adminToken');
   
   if (!token) {
-    return <Navigate to="/admin-login" replace />;
+    return <Navigate to="/" replace />; // Redirect to landing
   }
 
   try {
     const decoded = jwtDecode(token);
-    if (decoded.role !== requiredRole || Date.now() >= decoded.exp * 1000) {
+    if (decoded.role !== 'admin' && decoded.role !== 'service' || Date.now() >= decoded.exp * 1000) {
       localStorage.removeItem('adminToken');
-      return <Navigate to="/admin-login" replace />;
+      return <Navigate to="/" replace />;
     }
   } catch (err) {
     localStorage.removeItem('adminToken');
-    return <Navigate to="/admin-login" replace />;
+    return <Navigate to="/" replace />;
   }
 
   return <Outlet />;
