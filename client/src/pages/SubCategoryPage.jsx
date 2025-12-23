@@ -31,6 +31,16 @@ export default function CategoryPage() {
       .then(res => setSections(res.data));
   }, [catId]);
 
+  const addSubCategory = () => {
+  api.post('/sections', { name: newName, catId, creatorName: user.name, creatorCompany: user.company, creatorPhone: user.phone, creatorEmail: user.email })
+    .then(() => {
+      api.get('/sections?catId=' + catId)
+        .then(res => setSections(res.data));
+      setNewName('');
+      setOpen(false);
+    });
+};
+
   const addSection = () => {
     api.post('/sections', { name: newName, categoryId: catId })
       .then(res => {
@@ -61,14 +71,16 @@ export default function CategoryPage() {
         Sub Category Page
       </Typography>
 
-      <Box display="flex" justifyContent="space-between" alignItems="center" mb={6}>
-        <Typography variant="h3" color="#0d47a1" fontWeight="bold">
-          {category.name}
-        </Typography>
-        <Button variant="contained" startIcon={<Add />} onClick={() => setOpen(true)}>
-          Add Sub Category
-        </Button>
-      </Box>
+      {role === 'admin' && (
+        <Box display="flex" justifyContent="space-between" alignItems="center" mb={6}>
+          <Typography variant="h3" color="#0d47a1" fontWeight="bold">
+            {category.name}
+          </Typography>
+          <Button variant="contained" startIcon={<Add />} onClick={() => setOpen(true)}>
+            Add Sub Category
+          </Button>
+        </Box>
+      )}
 
       {sections.map(sec => (
         <Paper key={sec._id} elevation={6} sx={{ mb: 4, borderRadius: 3 }}>

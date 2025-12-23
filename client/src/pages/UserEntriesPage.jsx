@@ -39,23 +39,21 @@ export default function UserEntriesPage() {
     });
   };
 
-  const saveEntry = () => {
-    api.post('/entries', {
-      section: secId,
-      title,
-      content,
-      images,
-      creatorName: user.name, 
-      creatorCompany: user.company,
-      creatorPhone: user.phone,
-      creatorEmail: user.email,
-      timestamp: new Date()
-    }).then(res => {
-      setEntries([...entries, res.data]);
-      setTitle(''); setContent(''); setImages([]); setOpen(false);
-    });
-  };
-
+const saveEntry = () => {
+  api.post('/entries', {
+    section: secId,
+    title,
+    content,
+    images,
+    creatorName: user.name, 
+    creatorCompany: user.company,
+    creatorPhone: user.phone,
+    creatorEmail: user.email
+  }).then(res => {
+    setEntries([...entries, res.data]);
+    setTitle(''); setContent(''); setImages([]); setOpen(false);
+  });
+};
   const confirmDelete = (id) => setDeleteDialog(id);
   const executeDelete = () => {
     api.delete(`/entries/${deleteDialog}`)
@@ -77,11 +75,12 @@ export default function UserEntriesPage() {
         <Typography variant="h3" color="#1976d2" fontWeight="bold">
           {section.name}
         </Typography>
-        <Button variant="contained" startIcon={<Add />} onClick={() => setOpen(true)}>
-          Add Entry
-        </Button>
+        {role === 'admin' && (
+          <Button variant="contained" startIcon={<Add />} onClick={() => setOpen(true)}>
+            Add Entry
+          </Button>
+        )}
       </Box>
-
       {entries.length === 0 ? (
         <Typography color="text.secondary" align="center" sx={{ py: 8 }}>
           No entries yet — add your first entry
