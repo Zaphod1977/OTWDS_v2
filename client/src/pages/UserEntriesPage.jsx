@@ -1,6 +1,6 @@
 // client/src/pages/UserEntriesPage.jsx
 
-import { useEffect, useState, useContext } from 'react'; // Added useContext
+import { useEffect, useState } from 'react';
 import api from '../api';
 import { useParams, useNavigate } from 'react-router-dom';
 import {
@@ -9,12 +9,10 @@ import {
   TextField, Grid, IconButton
 } from '@mui/material';
 import { Add, CameraAlt, Delete } from '@mui/icons-material';
-import AuthContext from '../context/AuthContext'; // Add for user metadata
 
 export default function UserEntriesPage() {
   const { catId, secId } = useParams();
   const navigate = useNavigate();
-  const { user } = useContext(AuthContext); // Get user for metadata
   const [section, setSection] = useState(null);
   const [entries, setEntries] = useState([]);
   const [open, setOpen] = useState(false);
@@ -23,7 +21,7 @@ export default function UserEntriesPage() {
   const [images, setImages] = useState([]);
   const [deleteDialog, setDeleteDialog] = useState(null);
 
-  useEffect(() => {
+  useEffect (() => {
     api.get(`/sections/${secId}`)
       .then(res => setSection(res.data));
     api.get(`/entries?sectionId=${secId}`)
@@ -39,27 +37,33 @@ export default function UserEntriesPage() {
     });
   };
 
-const saveEntry = () => {
-  api.post('/entries', {
-    section: secId,
-    title,
-    content,
-    images,
-    creatorName: user.name, 
-    creatorCompany: user.company,
-    creatorPhone: user.phone,
-    creatorEmail: user.email
-  }).then(res => {
-    setEntries([...entries, res.data]);
-    setTitle(''); setContent(''); setImages([]); setOpen(false);
-  });
-};
+  const saveEntry = () => {
+    api.post('/entries', {
+      section: secId,
+      title,
+      content,
+      images
+    }).then(() => {
+      api.get(`/entries?sectionId=${secId}`) // Refetch to refresh
+        .then(res => setEntries(res.data));
+      setTitle(''); setContent(''); setImages([]); setOpen(false);
+    }).catch(err => {
+      console.error('Error adding entry', err);
+      alert('Failed to add entry');
+    });
+  };
+
   const confirmDelete = (id) => setDeleteDialog(id);
   const executeDelete = () => {
     api.delete(`/entries/${deleteDialog}`)
       .then(() => {
-        setEntries(entries.filter(e => e._id !== deleteDialog));
+        api.get(`/entries?sectionId=${secId}`) // Refetch to refresh
+          .then(res => setEntries(res.data));
         setDeleteDialog(null);
+      })
+      .catch(err => {
+        console.error('Error deleting entry', err);
+        alert('Failed to delete entry');
       });
   };
 
@@ -75,12 +79,11 @@ const saveEntry = () => {
         <Typography variant="h3" color="#1976d2" fontWeight="bold">
           {section.name}
         </Typography>
-        {role === 'admin' && (
-          <Button variant="contained" startIcon={<Add />} onClick={() => setOpen(true)}>
-            Add Entry
-          </Button>
-        )}
+        <Button variant="contained" startIcon={<Add />} onClick={() => setOpen(true)}>
+          Add Entry
+        </Button>
       </Box>
+
       {entries.length === 0 ? (
         <Typography color="text.secondary" align="center" sx={{ py: 8 }}>
           No entries yet — add your first entry

@@ -1,4 +1,4 @@
-// client/src/pages/CategoryPage.jsx  ← FINAL, BULLETPROOF, NO MORE BUGS
+// client/src/pages/SubCategoryPage.jsx
 
 import { useEffect, useState } from 'react';
 import api from '../api';
@@ -10,7 +10,7 @@ import {
 } from '@mui/material';
 import { Add, Delete } from '@mui/icons-material';
 
-export default function CategoryPage() {
+export default function SubCategoryPage() {
   const { catId } = useParams();
   const navigate = useNavigate();
   const [category, setCategory] = useState(null);
@@ -31,22 +31,17 @@ export default function CategoryPage() {
       .then(res => setSections(res.data));
   }, [catId]);
 
-  const addSubCategory = () => {
-  api.post('/sections', { name: newName, catId, creatorName: user.name, creatorCompany: user.company, creatorPhone: user.phone, creatorEmail: user.email })
-    .then(() => {
-      api.get('/sections?catId=' + catId)
-        .then(res => setSections(res.data));
-      setNewName('');
-      setOpen(false);
-    });
-};
-
   const addSection = () => {
     api.post('/sections', { name: newName, categoryId: catId })
-      .then(res => {
-        setSections([...sections, res.data]);
+      .then(() => {
+        api.get(`/sections?categoryId=${catId}`) // Refetch to refresh
+          .then(res => setSections(res.data));
         setNewName('');
         setOpen(false);
+      })
+      .catch(err => {
+        console.error('Error adding section', err);
+        alert('Failed to add sub category');
       });
   };
 
@@ -57,8 +52,13 @@ export default function CategoryPage() {
   const executeDelete = () => {
     api.delete(`/sections/${deleteDialog.id}`)
       .then(() => {
-        setSections(sections.filter(s => s._id !== deleteDialog.id));
+        api.get(`/sections?categoryId=${catId}`) // Refetch to refresh
+          .then(res => setSections(res.data));
         setDeleteDialog(null);
+      })
+      .catch(err => {
+        console.error('Error deleting section', err);
+        alert('Failed to delete sub category');
       });
   };
 
@@ -71,16 +71,14 @@ export default function CategoryPage() {
         Sub Category Page
       </Typography>
 
-      {role === 'admin' && (
-        <Box display="flex" justifyContent="space-between" alignItems="center" mb={6}>
-          <Typography variant="h3" color="#0d47a1" fontWeight="bold">
-            {category.name}
-          </Typography>
-          <Button variant="contained" startIcon={<Add />} onClick={() => setOpen(true)}>
-            Add Sub Category
-          </Button>
-        </Box>
-      )}
+      <Box display="flex" justifyContent="space-between" alignItems="center" mb={6}>
+        <Typography variant="h3" color="#0d47a1" fontWeight="bold">
+          {category.name}
+        </Typography>
+        <Button variant="contained" startIcon={<Add />} onClick={() => setOpen(true)}>
+          Add Sub Category
+        </Button>
+      </Box>
 
       {sections.map(sec => (
         <Paper key={sec._id} elevation={6} sx={{ mb: 4, borderRadius: 3 }}>
