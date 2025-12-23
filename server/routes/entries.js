@@ -5,9 +5,20 @@ const Entry = require('../models/Entry');
 // POST /api/entries
 router.post('/', async (req, res) => {
   try {
-    const { title, content, secId, creatorName, creatorCompany, creatorPhone, creatorEmail } = req.body;
-    const timestamp = new Date();
-    const entry = new Entry({ title, content, secId, creatorName, creatorCompany, creatorPhone, creatorEmail, timestamp });
+    const { title, content, section, images, creatorName, creatorCompany, creatorPhone, creatorEmail } = req.body;
+    if (!title || !section) {
+      return res.status(400).json({ error: 'Title and section ID are required' });
+    }
+    const entry = new Entry({
+      title,
+      content,
+      section, // Matches schema field
+      images,
+      creatorName,
+      creatorCompany,
+      creatorPhone,
+      creatorEmail
+    });
     await entry.save();
     res.status(201).json(entry);
   } catch (err) {
@@ -17,11 +28,15 @@ router.post('/', async (req, res) => {
 
 // GET /api/entries?sectionId=xxx
 router.get('/', async (req, res) => {
-  const { sectionId } = req.query;
-  const entries = await Entry.find({ section: sectionId })
-    .where('deleted').ne(true)   // ← THIS LINE
-    .sort('-createdAt');
-  res.json(entries);
+  try {
+    const { sectionId } = req.query;
+    const entries = await Entry.find({ section: sectionId })
+      .where('deleted').ne(true)
+      .sort('-createdAt');
+    res.json(entries);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 });
 
 // GET single entry
@@ -35,7 +50,7 @@ router.get('/:id', async (req, res) => {
   }
 });
 
-// DELETE entry (permanent) — YOU ALREADY HAVE THIS AND IT WORKS
+// DELETE entry (permanent)
 router.delete('/:id', async (req, res) => {
   try {
     await Entry.findByIdAndDelete(req.params.id);

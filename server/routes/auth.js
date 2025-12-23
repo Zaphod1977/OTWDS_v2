@@ -6,22 +6,41 @@ const crypto = require('crypto');
 const Token = require('../models/Token');
 const ServiceUser = require('../models/ServiceUser');
 
-const JWT_SECRET = process.env.JWT_SECRET || 'bobby2025'; // Add this to your .env file for security
+const JWT_SECRET = process.env.JWT_SECRET || 'bobby2025'; // Use your env var
 const ADMIN_HASH = '$2b$10$0Yh0GUni4BeSm8./plG4PeXLboC6Cn.0Wwdv9c5iIYyDcNo6hdywi';
 
-// Middleware to verify admin
+// Middleware to verify admin (already there, keeping it)
 const verifyAdmin = (req, res, next) => {
   const authHeader = req.headers['authorization'];
   const token = authHeader && authHeader.split(' ')[1];
   if (!token) return res.status(401).json({ message: 'No token provided' });
   jwt.verify(token, JWT_SECRET, (err, user) => {
-    console.log('Token verification error:', err ? err.message : 'No error'); // Add this
-    console.log('Decoded user:', user); // Add this
+    console.log('Token verification error:', err ? err.message : 'No error');
+    console.log('Decoded user:', user);
     if (err) return res.status(403).json({ message: 'Invalid token' });
     if (user.role !== 'admin') return res.status(403).json({ message: 'Unauthorized' });
     req.user = user;
     next();
   });
+};
+
+// New: Middleware to verify user (service or admin)
+const verifyUser = (req, res, next) => {
+  const token = req.headers.authorization?.split(' ')[1];
+  if (!token) return res.status(401).json({ error: 'No token provided' });
+
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    req.user = decoded; // Attaches decoded user details (name, company, etc.) to req
+    if (decoded.role === 'admin') return next(); // Admins can add anywhere
+    if (decoded.role === 'service' && decoded.catId === req.body.categoryId) { // Service users only for their category
+      return next();
+    }
+    return res.status(403).json({ error: 'Insufficient permissions' });
+  } catch (err) {
+    console.error('Token verification failed:', err);
+    return res.status(401).json({ error: 'Invalid token' });
+  }
 };
 
 // Admin login endpoint

@@ -2,14 +2,23 @@ const express = require('express');
 const router = express.Router();
 const Section = require('../models/Section');
 const Entry = require('../models/Entry');
-
+const { verifyUser } = require('./auth'); // Imports the middleware
 
 // POST /api/sections
 router.post('/', async (req, res) => {
   try {
-    const { name, catId, creatorName, creatorCompany, creatorPhone, creatorEmail } = req.body;
-    const timestamp = new Date();
-    const section = new Section({ name, catId, creatorName, creatorCompany, creatorPhone, creatorEmail, timestamp });
+    const { name, categoryId, creatorName, creatorCompany, creatorPhone, creatorEmail } = req.body;
+    if (!name || !categoryId) {
+      return res.status(400).json({ error: 'Name and category ID are required' });
+    }
+    const section = new Section({
+      name,
+      category: categoryId, // Assign to schema field 'category'
+      creatorName,
+      creatorCompany,
+      creatorPhone,
+      creatorEmail
+    });
     await section.save();
     res.status(201).json(section);
   } catch (err) {

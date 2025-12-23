@@ -1,5 +1,3 @@
-// client/src/pages/SubCategoryPage.jsx
-
 import { useEffect, useState } from 'react';
 import api from '../api';
 import { useParams, useNavigate } from 'react-router-dom';
@@ -20,28 +18,35 @@ export default function SubCategoryPage() {
   const [deleteDialog, setDeleteDialog] = useState(null); // { id, type }
 
   useEffect(() => {
-    api.get('/categories')
-      .then(res => setCategory(res.data))
-      .catch(() => {
-        api.get('/categories')
-          .then(res => setCategory(res.data.find(c => c._id === catId)));
-      });
+    api.get('/categories') // Add /api/ if your proxy is set
+      .then(res => {
+        const cat = res.data.find(c => c._id === catId);
+        if (cat) setCategory(cat);
+      })
+      .catch(err => console.error('Error fetching categories:', err));
 
     api.get(`/sections?categoryId=${catId}`)
-      .then(res => setSections(res.data));
+      .then(res => setSections(res.data))
+      .catch(err => console.error('Error fetching sections:', err));
   }, [catId]);
 
   const addSection = () => {
+    if (!newName.trim()) {
+      alert('Name is required');
+      return;
+    }
+    console.log('Sending POST:', { name: newName, categoryId: catId }); // Debug log
     api.post('/sections', { name: newName, categoryId: catId })
-      .then(() => {
-        api.get(`/sections?categoryId=${catId}`) // Refetch to refresh
+      .then(response => {
+        console.log('POST success:', response.data); // Debug log
+        api.get(`/sections?categoryId=${catId}`)
           .then(res => setSections(res.data));
         setNewName('');
         setOpen(false);
       })
       .catch(err => {
-        console.error('Error adding section', err);
-        alert('Failed to add sub category');
+        console.error('Error adding section:', err);
+        alert(err.response?.data?.error || 'Failed to add sub category');
       });
   };
 
@@ -52,13 +57,13 @@ export default function SubCategoryPage() {
   const executeDelete = () => {
     api.delete(`/sections/${deleteDialog.id}`)
       .then(() => {
-        api.get(`/sections?categoryId=${catId}`) // Refetch to refresh
+        api.get(`/sections?categoryId=${catId}`)
           .then(res => setSections(res.data));
         setDeleteDialog(null);
       })
       .catch(err => {
-        console.error('Error deleting section', err);
-        alert('Failed to delete sub category');
+        console.error('Error deleting section:', err);
+        alert(err.response?.data?.error || 'Failed to delete sub category');
       });
   };
 
@@ -66,7 +71,6 @@ export default function SubCategoryPage() {
 
   return (
     <Container maxWidth="lg" sx={{ py: 6 }}>
-      {/* Client Info Section */}
       <Typography variant="h5" color="white" fontWeight="bold" gutterBottom>
         Sub Category Page
       </Typography>
@@ -83,7 +87,6 @@ export default function SubCategoryPage() {
       {sections.map(sec => (
         <Paper key={sec._id} elevation={6} sx={{ mb: 4, borderRadius: 3 }}>
           <ListItem
-            button
             onClick={() => navigate(`/category/${catId}/section/${sec._id}`)}
             sx={{ bgcolor: '#1976d2', color: 'white', py: 4, cursor: 'pointer' }}
           >
@@ -103,7 +106,7 @@ export default function SubCategoryPage() {
 
       {/* Add Section Dialog */}
       <Dialog open={open} onClose={() => setOpen(false)}>
-        <DialogTitle>Add New Section</DialogTitle>
+        <DialogTitle>Add Sub Category</DialogTitle>
         <DialogContent>
           <TextField
             autoFocus

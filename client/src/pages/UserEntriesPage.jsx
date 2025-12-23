@@ -1,10 +1,8 @@
-// client/src/pages/UserEntriesPage.jsx
-
 import { useEffect, useState } from 'react';
 import api from '../api';
 import { useParams, useNavigate } from 'react-router-dom';
 import {
-  Button, Typography, Container, Paper, ListItem, ListItemText,
+  Button, Typography, Container, Paper,
   Box, Dialog, DialogTitle, DialogContent, DialogActions,
   TextField, Grid, IconButton
 } from '@mui/material';
@@ -21,11 +19,13 @@ export default function UserEntriesPage() {
   const [images, setImages] = useState([]);
   const [deleteDialog, setDeleteDialog] = useState(null);
 
-  useEffect (() => {
+  useEffect(() => {
     api.get(`/sections/${secId}`)
-      .then(res => setSection(res.data));
+      .then(res => setSection(res.data))
+      .catch(err => console.error('Error fetching section:', err));
     api.get(`/entries?sectionId=${secId}`)
-      .then(res => setEntries(res.data));
+      .then(res => setEntries(res.data))
+      .catch(err => console.error('Error fetching entries:', err));
   }, [secId]);
 
   const handleImageUpload = (e) => {
@@ -38,32 +38,35 @@ export default function UserEntriesPage() {
   };
 
   const saveEntry = () => {
-    api.post('/entries', {
-      section: secId,
-      title,
-      content,
-      images
-    }).then(() => {
-      api.get(`/entries?sectionId=${secId}`) // Refetch to refresh
-        .then(res => setEntries(res.data));
-      setTitle(''); setContent(''); setImages([]); setOpen(false);
-    }).catch(err => {
-      console.error('Error adding entry', err);
-      alert('Failed to add entry');
-    });
+    if (!title.trim()) {
+      alert('Title is required');
+      return;
+    }
+    console.log('Sending POST:', { title, content, section: secId, images }); // Debug log
+    api.post('/entries', { title, content, section: secId, images })
+      .then(response => {
+        console.log('POST success:', response.data); // Debug log
+        api.get(`/entries?sectionId=${secId}`)
+          .then(res => setEntries(res.data));
+        setTitle(''); setContent(''); setImages([]); setOpen(false);
+      })
+      .catch(err => {
+        console.error('Error adding entry:', err);
+        alert(err.response?.data?.error || 'Failed to add entry');
+      });
   };
 
   const confirmDelete = (id) => setDeleteDialog(id);
   const executeDelete = () => {
     api.delete(`/entries/${deleteDialog}`)
       .then(() => {
-        api.get(`/entries?sectionId=${secId}`) // Refetch to refresh
+        api.get(`/entries?sectionId=${secId}`)
           .then(res => setEntries(res.data));
         setDeleteDialog(null);
       })
       .catch(err => {
-        console.error('Error deleting entry', err);
-        alert('Failed to delete entry');
+        console.error('Error deleting entry:', err);
+        alert(err.response?.data?.error || 'Failed to delete entry');
       });
   };
 
