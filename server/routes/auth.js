@@ -15,6 +15,8 @@ const verifyAdmin = (req, res, next) => {
   const token = authHeader && authHeader.split(' ')[1];
   if (!token) return res.status(401).json({ message: 'No token provided' });
   jwt.verify(token, JWT_SECRET, (err, user) => {
+    console.log('Token verification error:', err ? err.message : 'No error'); // Add this
+    console.log('Decoded user:', user); // Add this
     if (err) return res.status(403).json({ message: 'Invalid token' });
     if (user.role !== 'admin') return res.status(403).json({ message: 'Unauthorized' });
     req.user = user;
@@ -29,7 +31,7 @@ router.post('/admin-login', async (req, res) => {
   try {
     const isMatch = await bcrypt.compare(code, ADMIN_HASH);
     if (isMatch) {
-      const token = jwt.sign({ role: 'admin' }, JWT_SECRET, { expiresIn: '1h' });
+      const token = jwt.sign({ role: 'admin' }, JWT_SECRET, { expiresIn: '6h' });
       return res.json({ success: true, token });
     }
     return res.status(401).json({ success: false, message: 'Invalid code' });

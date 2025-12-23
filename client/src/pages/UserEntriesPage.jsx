@@ -1,6 +1,6 @@
-// client/src/pages/SectionPage.jsx  ← FINAL WITH WORKING ADD ENTRY
+// client/src/pages/UserEntriesPage.jsx
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useContext } from 'react'; // Added useContext
 import api from '../api';
 import { useParams, useNavigate } from 'react-router-dom';
 import {
@@ -9,10 +9,12 @@ import {
   TextField, Grid, IconButton
 } from '@mui/material';
 import { Add, CameraAlt, Delete } from '@mui/icons-material';
+import AuthContext from '../context/AuthContext'; // Add for user metadata
 
-export default function SectionPage() {
+export default function UserEntriesPage() {
   const { catId, secId } = useParams();
   const navigate = useNavigate();
+  const { user } = useContext(AuthContext); // Get user for metadata
   const [section, setSection] = useState(null);
   const [entries, setEntries] = useState([]);
   const [open, setOpen] = useState(false);
@@ -42,7 +44,12 @@ export default function SectionPage() {
       section: secId,
       title,
       content,
-      images
+      images,
+      creatorName: user.name, 
+      creatorCompany: user.company,
+      creatorPhone: user.phone,
+      creatorEmail: user.email,
+      timestamp: new Date()
     }).then(res => {
       setEntries([...entries, res.data]);
       setTitle(''); setContent(''); setImages([]); setOpen(false);
@@ -61,9 +68,8 @@ export default function SectionPage() {
   if (!section) return <Typography>Loading...</Typography>;
 
   return (
-
     <Container maxWidth="lg" sx={{ py: 6 }}>
-            <Typography variant="h5" color="white" fontWeight="bold" gutterBottom>
+      <Typography variant="h5" color="white" fontWeight="bold" gutterBottom>
         Service User Entry Page
       </Typography>
 

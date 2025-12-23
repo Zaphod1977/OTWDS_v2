@@ -7,8 +7,8 @@ const Entry = require('../models/Entry');
 // POST /api/sections
 router.post('/', async (req, res) => {
   try {
-    const { name, categoryId } = req.body;
-    const section = new Section({ name, category: categoryId });
+    const { name, catId, creatorName, creatorCompany, creatorPhone, creatorEmail, timestamp } = req.body;
+    const section = new Section({ name, catId, creatorName, creatorCompany, creatorPhone, creatorEmail, timestamp: timestamp || new Date() });
     await section.save();
     res.status(201).json(section);
   } catch (err) {

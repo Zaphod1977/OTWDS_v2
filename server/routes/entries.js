@@ -5,8 +5,8 @@ const Entry = require('../models/Entry');
 // POST /api/entries
 router.post('/', async (req, res) => {
   try {
-    const { title, content, secId, creatorName, creatorCompany, timestamp } = req.body;
-    const entry = new Entry({ title, content, secId, creatorName, creatorCompany, timestamp: timestamp || new Date() });
+    const { title, content, secId, creatorName, creatorCompany, creatorPhone, creatorEmail, timestamp } = req.body;
+    const entry = new Entry({ title, content, secId, creatorName, creatorCompany, creatorPhone, creatorEmail, timestamp: timestamp || new Date() });
     await entry.save();
     res.status(201).json(entry);
   } catch (err) {

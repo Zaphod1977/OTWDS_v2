@@ -18,17 +18,29 @@ const TokenGenerator = () => {
       .catch(err => setError('Failed to load categories'));
   }, []);
 
-  const handleGenerate = async () => {
-    setError('');
-    setToken('');
-    setCopied(false);
-    try {
-      const response = await api.post('/auth/generate-token', { name, timeFrame, category });
-      setToken(response.data.token);
-    } catch (err) {
-      setError('Error generating token');
+const handleGenerate = async () => {
+  setError('');
+  setToken('');
+  setCopied(false);
+  try {
+    const authToken = localStorage.getItem('adminToken');
+    if (!authToken) {
+      setError('You must be logged in as admin to generate tokens');
+      return;
     }
-  };
+    console.log('Sending authToken:', authToken); // Add this line
+    console.log('Authorization header:', `Bearer ${authToken}`); // Add this line
+    const response = await api.post('/auth/generate-token', { name, timeFrame, category }, {
+      headers: {
+        Authorization: `Bearer ${authToken}` // Add this to send the token
+      }
+    });
+    setToken(response.data.token);
+  } catch (err) {
+    setError(err.response?.data?.message || 'Error generating token');
+  }
+};
+
 
   const handleCopy = () => {
     navigator.clipboard.writeText(token);
