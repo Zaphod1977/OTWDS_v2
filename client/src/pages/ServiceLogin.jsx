@@ -52,7 +52,7 @@ const ServiceLogin = () => {
   };
 
   return (
-    <Box sx={{ maxWidth: 400, mx: 'auto', p: 2, border: '1px solid #ccc', borderRadius: 2 }}>
+    <Box sx={{ maxWidth: 400, mx: 'auto', p: 2, border: '1px solid #000000ff', borderRadius: 2 }}>
       <Typography variant="h5" gutterBottom>
         Service User Login
       </Typography>
@@ -62,14 +62,15 @@ const ServiceLogin = () => {
       <form onSubmit={handleTokenSubmit}>
         <TextField
           label="Access Token"
-          variant="outlined"
+          variant="filled"
           fullWidth
           value={token}
           onChange={(e) => setToken(e.target.value)}
-          sx={{ mb: 2 }}
+          required 
+          sx={{ mb: 2, bgcolor: 'grey', input: { color: 'black' }, label: { color: 'black' } }}
         />
         {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
-        <Button type="submit" variant="contained" fullWidth>
+        <Button type="submit" variant="contained" fullWidth sx={{ bgcolor: '#2196f3' }} >
           Login
         </Button>
       </form>

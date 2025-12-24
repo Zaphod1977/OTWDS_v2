@@ -79,7 +79,7 @@ export default function UserEntriesPage() {
       </Typography>
 
       <Box display="flex" justifyContent="space-between" alignItems="center" mb={6}>
-        <Typography variant="h3" color="#1976d2" fontWeight="bold">
+        <Typography variant="h3" color="#ffffffff" fontWeight="bold">
           {section.name}
         </Typography>
         <Button variant="contained" startIcon={<Add />} onClick={() => setOpen(true)}>
@@ -127,7 +127,7 @@ export default function UserEntriesPage() {
           <Grid container spacing={2} sx={{ mt: 2 }}>
             {images.map((img, i) => (
               <Grid item key={i}>
-                <img src={img} style={{ width: 150, height: 150, objectFit: 'cover', borderRadius: 8 }} alt="preview" />
+                <img src={img} style={{ width: 150, height: 150, objectFit: 'cover', borderRadius: 8 }}  alt="preview" />
               </Grid>
             ))}
           </Grid>

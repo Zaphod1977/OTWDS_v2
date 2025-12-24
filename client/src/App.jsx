@@ -10,6 +10,7 @@ import LandingPage from './pages/LandingPage';
 import AdminDashboard from './pages/AdminDashboard';
 import TokenGenerator from './pages/TokenGenerator'; // Add this if not already
 import Header from './pages/Header';
+import Footer from './pages/Footer';
 import { AuthProvider } from './context/AuthContext';
 import { Container, Typography, Button } from '@mui/material';
 import { Link } from 'react-router-dom';
@@ -28,6 +29,7 @@ export default function App() {
         <Route path="/category/:catId/section/:secId" element={<SectionPage />} />
         <Route path="/entry/:entryId" element={<EntryPage />} />
       </Routes>
+      <Footer/>
     </AuthProvider>
   );
 }

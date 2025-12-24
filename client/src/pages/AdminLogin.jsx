@@ -46,7 +46,7 @@ const AdminLogin = () => {
   };
 
   return (
-    <Box sx={{ maxWidth: 400, mx: 'auto', p: 2, bgcolor: '#757575', borderRadius: 2, color: 'white' }}>
+    <Box sx={{ maxWidth: 400, mx: 'auto', p: 2, border: '1px solid #000000ff', borderRadius: 2 }}>
       <Typography variant="h5" gutterBottom align="center">
         Admin Login
       </Typography>
