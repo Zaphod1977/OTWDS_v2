@@ -16,24 +16,22 @@ import { Container, Typography, Button } from '@mui/material';
 import { Link } from 'react-router-dom';
 
 export default function App() {
-  return (
-    <div className="app-container">  {/* Add this class for the flex parent */}
-      <AuthProvider>
-        <Header />
-        <main className="main-content">  {/* New wrapper: this will grow */}
-          <Routes>
-            <Route path="/" element={<LandingPage />} />
-            <Route element={<PrivateRoute requiredRole={['admin', 'service']} />}>
-              <Route path="/dashboard" element={<AdminDashboard />} />
-              <Route path="/token-generator" element={<TokenGenerator />} />
-            </Route>
-            <Route path="/category/:catId" element={<CategoryPage />} />
-            <Route path="/category/:catId/section/:secId" element={<SectionPage />} />
-            <Route path="/entry/:entryId" element={<EntryPage />} />
-          </Routes>
-        </main>
-        <Footer />
-      </AuthProvider>
+   return (
+    <div className="app-container">
+    <AuthProvider>
+      <Header />
+      <Routes>
+        <Route path="/" element={<LandingPage />} />
+        <Route element={<PrivateRoute requiredRole={['admin', 'service']} />}> {/* Updated to allow both */}
+          <Route path="/dashboard" element={<AdminDashboard />} />
+          <Route path="/token-generator" element={<TokenGenerator />} />
+        </Route>
+        <Route path="/category/:catId" element={<CategoryPage />} />
+        <Route path="/category/:catId/section/:secId" element={<SectionPage />} />
+        <Route path="/entry/:entryId" element={<EntryPage />} />
+      </Routes>
+      <Footer/>
+    </AuthProvider>
     </div>
   );
 }
