@@ -1,10 +1,41 @@
+html {
+  height: 100%;
+  /* Full viewport height chain */
+}
+
+body {
+  min-height: 100%;
+  /* Remove defaults */
+  margin: 0;
+  /* Kill default margins */
+  min-height: 100%;
+  /* Full viewport */
+  /* No extra padding */
+}
+
 #root {
   max-width: full;
-  max-height: full;
+  min-height: 100%;
   margin: 0 auto;
   text-align: center;
   background-color: rgb(102, 102, 102);
   color: white;
+}
+
+main {
+  flex: 1 0 auto;
+  /* Grow to fill space, don't shrink below content, auto basis */
+}
+
+.app-container {
+  min-height: 100vh; /* Viewport height for reliability */
+  display: flex; /* Flex container */
+  flex-direction: column; /* Stack vertically */
+}
+
+.main-content {
+  flex: 1 0 auto; /* Grows to fill space, respects content height */
+  /* Add padding or other styles if needed for your pages */
 }
 
 a {
@@ -22,18 +53,28 @@ a {
 #con {
   display: flex;
   justify-content: space-evenly;
-  background-color: rgb(255, 255, 255);
-  color: black;
-  font-size: 1.2em;
-  height: 3em;
-  width: 100%;
-  padding: 1.7em 0 0 0;
+  height: 50px;
+  /* Fixed height; adjust as needed (e.g., 60px or 4rem) */
+  background-color: white;
+  /* From your screenshot */
+  display: flex;
+  /* To center/align your links horizontally */
+  justify-content: center;
+  /* Center the links */
+  align-items: center;
+  /* Vertically center content */
+  gap: 2rem;
+  /* Space between links; adjust as needed */
+  padding: 0 1rem;
+  /* Optional horizontal padding */
+  box-sizing: border-box;
+  /* Ensures padding doesn't add to height */
 }
 
 .footerbutton {
   color: black;
   text-decoration: none;
-  font-size: 1.3em;
+  font-size: 1em;
 }
 
 .logo {
@@ -55,6 +96,7 @@ a {
   from {
     transform: rotate(0deg);
   }
+
   to {
     transform: rotate(360deg);
   }
