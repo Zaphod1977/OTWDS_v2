@@ -50,8 +50,8 @@ const handleGenerate = async () => {
 
   return (
     <Box sx={{ maxWidth: '400px', margin: 'auto', padding: '20px' }}>
-      <Typography variant="h2">Token Generator</Typography>
-      <TextField
+      <Typography variant="h2" >Token Generator</Typography>
+      <TextField 
         label="Service User Name"
         value={name}
         onChange={(e) => setName(e.target.value)}

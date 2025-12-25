@@ -1,11 +1,15 @@
 import React from 'react';
 import CategoriesList from './CategoriesList'; // Assuming same folder
+import { Typography } from '@mui/material';
+
 
 const Dashboard = () => {
   return (
     <div>
       <br></br>
-      <h2>Categories Page</h2>
+      <Typography variant="h4" color="white" fontWeight="bold" gutterBottom>
+        Categories Page
+      </Typography>
       <CategoriesList /> {/* Restores original access */}
     </div>
   );

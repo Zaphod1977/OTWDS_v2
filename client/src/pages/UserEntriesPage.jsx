@@ -74,12 +74,12 @@ export default function UserEntriesPage() {
 
   return (
     <Container maxWidth="lg" sx={{ py: 6 }}>
-      <Typography variant="h5" color="white" fontWeight="bold" gutterBottom>
+      <Typography variant="h4" color="white" fontWeight="bold" gutterBottom>
         Service User Entry Page
       </Typography>
 
       <Box display="flex" justifyContent="space-between" alignItems="center" mb={6}>
-        <Typography variant="h3" color="#ffffffff" fontWeight="bold">
+        <Typography variant="h5" color="#1b2431ff" fontWeight="bold">
           {section.name}
         </Typography>
         <Button variant="contained" startIcon={<Add />} onClick={() => setOpen(true)}>
