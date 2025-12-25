@@ -7,7 +7,13 @@ const app = express();
 
 // Middleware
 app.use(cors({
-  origin: ['http://localhost:5173', 'https://main.d3qk4r01h8cob1.amplifyapp.com', 'https://www.otwds.com/', 'https://otwds.com' ], // Local + hosted + custom domain
+  origin: [
+    'http://localhost:5173',
+    'https://main.d3qk4r01h8cob1.amplifyapp.com',
+    'https://www.otwds.com/',
+    'https://otwds.com'
+  ],
+  credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'], // Added 'DELETE'
   allowedHeaders: ['Content-Type', 'Authorization']
 }));
