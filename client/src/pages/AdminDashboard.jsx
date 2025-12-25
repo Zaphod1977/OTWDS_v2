@@ -6,11 +6,11 @@ import { Typography } from '@mui/material';
 const Dashboard = () => {
   return (
     <div>
-      <br></br>
-      <Typography variant="h4" color="white" fontWeight="bold" gutterBottom>
-        Categories Page
-      </Typography>
-      <CategoriesList /> {/* Restores original access */}
+        <br></br>
+        <Typography variant="h4" color="white" fontWeight="bold" gutterBottom>
+          Categories Page
+        </Typography>
+        <CategoriesList /> {/* Restores original access */}
     </div>
   );
 };

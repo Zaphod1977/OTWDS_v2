@@ -51,7 +51,8 @@ export default function CategoriesList() {
   };
 
   return (
-    <>
+  <>
+    <Box sx={{ m: 2 }}>  {/* Adds 16px margin on all sides; use p: 2 for padding instead if preferred */}
       {role === 'admin' && (
         <Box textAlign="right" mb={6}>
           <br></br>
@@ -83,28 +84,29 @@ export default function CategoriesList() {
           </Paper>
         );
       })}
+    </Box>
 
-      <Dialog open={open} onClose={() => setOpen(false)}>
-        <DialogTitle>Add New Category</DialogTitle>
-        <DialogContent>
-          <TextField autoFocus fullWidth label="Name" value={newName} onChange={e => setNewName(e.target.value)} />
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setOpen(false)}>Cancel</Button>
-          <Button onClick={addCategory} variant="contained">Create</Button>
-        </DialogActions>
-      </Dialog>
+    <Dialog open={open} onClose={() => setOpen(false)}>
+      <DialogTitle>Add New Category</DialogTitle>
+      <DialogContent>
+        <TextField autoFocus fullWidth label="Name" value={newName} onChange={e => setNewName(e.target.value)} />
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={() => setOpen(false)}>Cancel</Button>
+        <Button onClick={addCategory} variant="contained">Create</Button>
+      </DialogActions>
+    </Dialog>
 
-      <Dialog open={deleteOpen} onClose={() => setDeleteOpen(false)}>
-        <DialogTitle>Confirm Delete</DialogTitle>
-        <DialogContent>
-          <Typography>Are you sure you want to delete this category?</Typography>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setDeleteOpen(false)}>Cancel</Button>
-          <Button onClick={confirmDelete} variant="contained" color="error">OK</Button>
-        </DialogActions>
-      </Dialog>
-    </>
-  );
+    <Dialog open={deleteOpen} onClose={() => setDeleteOpen(false)}>
+      <DialogTitle>Confirm Delete</DialogTitle>
+      <DialogContent>
+        <Typography>Are you sure you want to delete this category?</Typography>
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={() => setDeleteOpen(false)}>Cancel</Button>
+        <Button onClick={confirmDelete} variant="contained" color="error">OK</Button>
+      </DialogActions>
+    </Dialog>
+  </>
+);
 }

@@ -88,11 +88,11 @@ export default function SubCategoryPage() {
         <Paper key={sec._id} elevation={6} sx={{ mb: 4, borderRadius: 3 }}>
           <ListItem
             onClick={() => navigate(`/category/${catId}/section/${sec._id}`)}
-            sx={{ bgcolor: '#1976d2', color: 'white', py: 4, cursor: 'pointer' }}
+            sx={{ bgcolor: '#1976d2', color: 'white', py: 3, cursor: 'pointer' }}
           >
             <ListItemText
               primary={sec.name}
-              primaryTypographyProps={{ fontSize: 28, fontWeight: 'bold' }}
+              primaryTypographyProps={{ fontSize: 22, fontWeight: 'bold' }}
             />
             <IconButton
               color="inherit"
