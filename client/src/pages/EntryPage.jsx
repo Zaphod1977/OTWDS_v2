@@ -43,8 +43,8 @@ export default function EntryPage() {
 
       {entry.content && (
         <Paper sx={{ mt: 4, p: 4 }}>
-          <Typography variant="h6" gutterBottom>Notes</Typography>
-          <Typography sx={{ whiteSpace: 'pre-wrap', fontSize: 18 }}>
+          <Typography variant="h5" gutterBottom>Info: Contact details, Work Notes</Typography>
+          <Typography sx={{ whiteSpace: 'pre-wrap', fontSize: 16 }}>
             {entry.content}
           </Typography>
         </Paper>
